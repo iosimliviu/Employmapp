@@ -5,37 +5,14 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         autoIncrement: true
       },
-      lastName: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      email: {
-        type: DataTypes.STRING,
-        validate: {
-          isEmail: true
-        },
-        allowNull: false
-      },
-      phone: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      isAdmin: {
-          type: DataTypes.BOOLEAN,
-          defaultValue: false
-      }, 
-      isObserver: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-      },
+      lastName: DataTypes.STRING,
+      firstName: DataTypes.STRING,
+      email: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      password: DataTypes.STRING,
+      token: DataTypes.STRING,
+      isAdmin: DataTypes.BOOLEAN,
+      isObserver: DataTypes.BOOLEAN,
       registeredAt: "DATETIME",
       lastLogin: "DATETIME"
     });
