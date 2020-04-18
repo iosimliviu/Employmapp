@@ -1,4 +1,5 @@
-const User = require("../models/index").User;
+const User = require("../models/index.js").User;
+const Test = require("../models/index.js").Test;
 
 const getUser =  async(req, res) => {
     const userId = req.params.id;
@@ -118,11 +119,26 @@ const updateUser = async (req, res) => {
         res.status(500).send({ message: "server error" })
     }
 }
+
+const getAllTestsForUser = async (req, res) => {
+  let user_id = req.params.user_id;
+  let tests = await Test.findAll({
+    where : {
+      userId : user_id
+    }
+  });
+  if (tests.length > 0) {
+    res.status(200).json(tests);
+  } else 
+  res.status(404).json({ message: "user has taken 0 tests" });
+};
+
 module.exports = {
     getUser,
     getAllUsers,
     createUser,
     deleteUser,
-    updateUser
+    updateUser,
+    getAllTestsForUser
 };
   
