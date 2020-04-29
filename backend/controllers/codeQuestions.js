@@ -2,7 +2,7 @@ const exec = require('child_process').execSync;
 const fs = require('fs');
 const path = require('path');
 
-const CODE_FOLDER = "code";
+const CODE_FOLDER = "../code";
 //MAKE POST WITH ANSWER,TEST WHEN U COM BACC
 
 //NOTE: extract the  number of passed tests from the results string, put it in a variable, tests.result += NoPassedTests * codeQuestions.scorePerTest
@@ -13,7 +13,7 @@ function testCode(req, res) {
     try {
       fs.writeFileSync(path.join(__dirname, CODE_FOLDER, "input_code.py"), code);
       fs.writeFileSync(path.join(__dirname, CODE_FOLDER, "test.py"), test);
-      const proc = exec(path.join(CODE_FOLDER, "test.py"));//"python code/test.py");
+      const proc = exec("python code/test.py");//path.join(CODE_FOLDER, "test.py"));//
       const results = proc.toString();
   
       return res.send(results);
