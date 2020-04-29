@@ -1,3 +1,4 @@
+
 from input_code import solution
 
 def get_test_cases():
@@ -26,7 +27,7 @@ def test_code():
         else:
             failed_test_cases.append(label)
 
-    print('Passed', passed_test_cases, 'out of', test_cases_count, 'test cases.')
+    print('Passed', str(passed_test_cases), 'out of', str(test_cases_count), 'test cases.')
     
     if len(failed_test_cases) > 0:
         print('Test cases not passed:', ', '.join(failed_test_cases))

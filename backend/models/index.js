@@ -6,14 +6,12 @@ const TestQuestion = sequelize.import("./testQuestions.js");
 const Question = sequelize.import("./questions.js");
 const Answer = sequelize.import("./answers.js");
 const CodeQuestion = sequelize.import("./codeQuestions.js");
-const CodeQuestionTest = sequelize.import("./codeQuestionsTests.js");
 
 User.hasOne(Feedback, { onDelete: "cascade", hooks: "true" });
 User.hasMany(Test);
 Test.hasMany(TestQuestion, { onDelete: "cascade", hooks: "true" });
 TestQuestion.hasMany(Question);
 TestQuestion.hasMany(CodeQuestion);
-CodeQuestion.hasMany(CodeQuestionTest, { onDelete: "cascade", hooks: "true" });
 Question.hasMany(Answer, { onDelete: "cascade", hooks: "true" });
 
 sequelize.sync().then(() => {
@@ -28,6 +26,5 @@ module.exports = {
   TestQuestion,
   Question,
   Answer,
-  CodeQuestion,
-  CodeQuestionTest,
+  CodeQuestion
 };

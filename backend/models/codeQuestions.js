@@ -5,7 +5,10 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        questionText: DataTypes.STRING
+        questionText: DataTypes.STRING,
+        answer: DataTypes.STRING,
+        test: DataTypes.STRING,
+        scorePerTest : DataTypes.INTEGER
     });
 };
   
