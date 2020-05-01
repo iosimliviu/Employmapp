@@ -3,9 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const CODE_FOLDER = "../code";
-//MAKE POST WITH ANSWER,TEST WHEN U COM BACC
 
-//NOTE: extract the  number of passed tests from the results string, put it in a variable, tests.result += NoPassedTests * codeQuestions.scorePerTest
+//tests.result += NoPassedTests * codeQuestions.scorePerTest
 function testCode(req, res) {
   let sessionId = req.session.id;
   let importInputCode = `from input_code${sessionId} import solution\n`;
@@ -17,7 +16,7 @@ function testCode(req, res) {
     fs.writeFileSync(path.join(__dirname, CODE_FOLDER, `test${sessionId}.py`), test);
     const proc = exec(`python code/test${sessionId}.py`);//path.join(CODE_FOLDER, "test.py"));//
     const results = proc.toString();
-    
+
     let regexPassedTests = /Passed (\d+) out/g;
     var match = regexPassedTests.exec(results);
     let noPassedTests = match[1];
