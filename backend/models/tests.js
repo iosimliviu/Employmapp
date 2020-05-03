@@ -8,8 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       duration: DataTypes.INTEGER,
       name: DataTypes.STRING,
       description: DataTypes.STRING,
-      startedAt: "DATETIME",
-      finishedAt: "DATETIME",
-      result: DataTypes.INTEGER
+      type: DataTypes.STRING
     });
 };

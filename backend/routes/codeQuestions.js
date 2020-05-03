@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const codeQuestionsController = require("../controllers/codeQuestions.js");
 
-router.post("/", codeQuestionsController.testCode);
-
+router.post("/", codeQuestionsController.createCodeQuestion);
+router.get("/:id", codeQuestionsController.getCodeQuestion);
 module.exports = router;
 

@@ -1,14 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define("testQuestions", {
+    return sequelize.define("codeQuestionsTests", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        isCodeQuestion:{
-            type: DataTypes.BOOLEAN,
-            defaultValue: false
-        }
+        answer: DataTypes.STRING
     });
 };
   
