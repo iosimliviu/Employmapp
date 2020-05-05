@@ -4,7 +4,7 @@ const authService = require("../services/auth.js");
 
 router.get("/", authService.checkLogin, testController.getAllTest);
 router.get("/:id", authService.checkLogin, testController.getTest);
-router.post("/", authService.checkLogin, testController.createTest);
+router.post("/", testController.createTest);
 router.delete("/:id", authService.checkLogin, testController.deleteTest);
 
 module.exports = router;
