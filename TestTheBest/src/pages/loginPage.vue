@@ -1,15 +1,17 @@
 <template>
-  <q-page class="flex flex-center">
-    <div class="container">
-      <div class="description-area">
+  <q-page class="app flex flex-center">
+    <div class="container row">
+      <div class="description-area col">
         <h3 class="text-rubik">Test the best</h3>
-        <p class="text-subtitle1">Get that bread!</p>
       </div>
-      <div class="login-area">
+      <div class="login-area col">
         <q-card class="login-card">
           <q-card-section class="card-section">
             <div class="img-center">
-              <img style="width:100px; height: 100px; background" src="../assets/sad.svg" />
+              <img
+                style="width:100px; height: 100px; background "
+                src="../assets/code.png"
+              />
             </div>
           </q-card-section>
 
@@ -21,16 +23,33 @@
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="one">
               <q-input v-model="login.email" type="email" label="Email" />
-              <q-input v-model="login.password" type="password" label="Password" />
+              <q-input
+                v-model="login.password"
+                type="password"
+                label="Password"
+              />
 
               <q-btn @click="onLogin" color="primary" label="Log In" />
             </q-tab-panel>
 
             <q-tab-panel name="two">
-              <q-input v-model="signup.firstName" type="text" label="First name" />
-              <q-input v-model="signup.lastName" type="text" label="Last name" />
+              <q-input
+                v-model="signup.firstName"
+                type="text"
+                label="First name"
+              />
+              <q-input
+                v-model="signup.lastName"
+                type="text"
+                label="Last name"
+              />
               <q-input v-model="signup.email" type="email" label="Email" />
-              <q-input v-model="signup.password" type="password" label="Password" />
+              <q-input v-model="signup.phone" type="phone" label="Phone" />
+              <q-input
+                v-model="signup.password"
+                type="password"
+                label="Password"
+              />
               <q-btn @click="signUp" color="primary" label="Sign Up" />
             </q-tab-panel>
           </q-tab-panels>
@@ -41,6 +60,7 @@
 </template>
 
 <script>
+import { LocalStorage } from "quasar";
 export default {
   name: "LoginPage",
   data() {
@@ -49,6 +69,7 @@ export default {
       signup: {
         password: "",
         email: "",
+        phone: "",
         firstName: "",
         lastName: ""
       },
@@ -58,15 +79,19 @@ export default {
       }
     };
   },
+  beforeMount() {
+    if (LocalStorage.getItem("loggedIn")) {
+      //this.isAdmin();
+    }
+  },
   methods: {
     signUp() {
       this.$axios
-        .post("/api/auth/register", this.signup)
+        .post("/api/users/register", this.signup)
         .then(response => {
           console.log(response.data);
           this.$q.notify({
             color: "green",
-
             message: response.data.message,
             icon: "arrow_forward"
           });
@@ -74,7 +99,6 @@ export default {
         .catch(error => {
           this.$q.notify({
             color: "negative",
-
             message: error.response.data.message,
             icon: "report_problem"
           });
@@ -90,17 +114,32 @@ export default {
           console.log(response.data);
           this.$q.notify({
             color: "green",
-
             message: response.data.message,
             icon: "arrow_forward"
           });
-
-          this.$router.push("/");
+          LocalStorage.set("loggedIn", true);
+          this.isAdmin();
         })
         .catch(error => {
           this.$q.notify({
             color: "negative",
-
+            message: error.response.data.message,
+            icon: "report_problem"
+          });
+        });
+    },
+    isAdmin() {
+      this.$axios
+        .post("/api/users/email/", {
+          email: this.login.email
+        })
+        .then(response => {
+          if (response.data.isAdmin === false) this.$router.push("/");
+          else this.$router.push("/admin");
+        })
+        .catch(error => {
+          this.$q.notify({
+            color: "negative",
             message: error.response.data.message,
             icon: "report_problem"
           });
@@ -111,22 +150,28 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: row;
-  background-repeat: no-repeat;
-  background-position: fixed;
-  background-size: cover;
+.app {
+  background-image: url(../assets/topography.svg);
 }
+.container {
+  background-color: lightgrey;
+  border-radius: 25px;
+  width: 80%;
+  height: 100%;
+}
+
 .description-area,
 .login-area {
   flex-basis: 0;
   flex-grow: 1;
 }
+
 .description-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .login-area {
   display: flex;
   justify-content: center;
@@ -134,42 +179,42 @@ export default {
 }
 .login-card {
   width: 100%;
-  max-width: 300px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 15px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  padding: 2vh;
-  width: 25vw;
-  background-color: #018787;
+  padding: 2vh 12vh;
+  background-color: #232323;
+  border-radius: 25px;
+  height: 80vh;
 }
-
 .q-tab-panel {
   background-color: #f5f5f5;
 }
-
 .card-section {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
-
 .q-field {
   margin-bottom: 10px;
 }
-
 .q-field--standout .q-field__control {
   margin-bottom: 10px;
 }
-
 @media only screen and (max-width: 700px) {
   .description-area {
     display: none;
   }
   .login-card {
-    width: 90%;
+    width: 100%;
+    height: 100%;
+    padding: 2vh;
+  }
+}
+
+@media only screen and (max-width: 1150px) {
+  .login-card {
+    padding: 2vh;
   }
 }
 </style>
-
-

@@ -43,7 +43,7 @@ module.exports = function(ctx) {
 			directives: [],
 
 			// Quasar plugins
-			plugins: ['Notify']
+			plugins: ['Notify', 'LocalStorage']
 		},
 
 		// https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -76,7 +76,7 @@ module.exports = function(ctx) {
 				// ]);
 				cfg.plugins.push(
 					new MonacoWebpackPlugin({
-						languages: [ 'javascript' ]
+						languages: [ 'javascript', 'python' ]
 					})
 				);
 			}

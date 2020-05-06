@@ -3,7 +3,7 @@
     <q-header elevated class="bg-black">
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-toolbar-title>TestTheBest</q-toolbar-title>
+        <q-toolbar-title>TestTheBest ADMIN</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -62,7 +62,6 @@
 </style>
 
 <script>
-import { LocalStorage } from "quasar";
 export default {
   name: "Layout",
 
@@ -75,16 +74,6 @@ export default {
           label: "Home",
           icon: "home",
           to: "/"
-        },
-        {
-          label: "Profile",
-          icon: "perm_identity",
-          to: "/profile"
-        },
-        {
-          label: "Test",
-          icon: "description",
-          to: "/test"
         },
         {
           label: "Settings",
@@ -100,11 +89,6 @@ export default {
       ]
     };
   },
-  // beforeMount() {
-  //   if (LocalStorage.getItem("loggedIn")) {
-  //     this.$router.push("/");
-  //   }
-  // },
   methods: {
     logout() {
       this.$axios
@@ -117,8 +101,7 @@ export default {
             message: response.data.message,
             icon: "arrow_forward"
           });
-          this.$router.push("/login");
-         // LocalStorage.set("loggedIn", false);
+          document.cookie = "loggedIn=false";
         })
         .catch(error => {
           this.$q.notify({
