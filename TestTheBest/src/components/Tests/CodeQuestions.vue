@@ -1,11 +1,17 @@
 <template>
-    <div class="codeQuestion q-ma-lg">
+  <div class="codeQuestion">
+    <div
+      v-for="codeQuestion in info.codeQuestions"
+      :key="codeQuestion.id"
+      class="q-ma-lg"
+    >
       <q-card class="question">
         <q-card-section>
-          <div class="text-h6">{{ question }}</div>
-           <q-btn color="primary" size="24px" >Run</q-btn>
+          <div class="text-h6">
+            {{ codeQuestion.testId }}{{ codeQuestion.questionText }}
+          </div>
+          <q-btn color="primary" size="24px">Run</q-btn>
         </q-card-section>
-         
       </q-card>
 
       <MonacoEditor
@@ -19,10 +25,11 @@
 
       <q-card class="output">
         <q-card-section>
-          <div class="text-h6">{{ info }}</div>
+          <div class="text-h6">{{ guidanceData }}</div>
         </q-card-section>
       </q-card>
     </div>
+  </div>
 </template>
 
 <script>
@@ -30,18 +37,20 @@ import MonacoEditor from "monaco-editor-vue";
 
 export default {
   name: "CodeQuestions",
+  props: {
+    info: {
+      type: Object
+    }
+  },
   components: {
     MonacoEditor
   },
   data() {
     return {
-      question:
-        "Find the maximum number in an array of integers. For example, in the array [1, -3, 5], the maximum number is 5.",
-      info: "Passed 2 out of 2",
+      guidanceData: "Passed 2 out of 2",
       options: {
         //Monaco Editor Options
       }
-      
     };
   },
   methods: {
@@ -51,7 +60,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .codeQuestion {

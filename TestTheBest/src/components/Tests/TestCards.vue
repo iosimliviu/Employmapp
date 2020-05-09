@@ -17,7 +17,9 @@
           <q-separator dark inset />
           {{ test.duration }}
           <q-card-actions align="around">
-            <q-btn color="secondary" size="24px" flat>Take Test</q-btn>
+            <q-btn @click="goTest(test.id)" color="secondary" size="24px" flat
+              >Take Test</q-btn
+            >
           </q-card-actions>
         </q-card-section>
       </q-card-section>
@@ -26,20 +28,24 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "TestCards",
-  // methods: {
-  //   ...mapActions(["fetchTestsMetadata"])
-  // },
+  methods: {
+    goTest(test_id) {
+      console.log(test_id);
+      this.$router.push(`/test?id=${test_id}`);
+    }
+  },
   computed: {
-    getTestsMetadata(){
-        return this.$store.getters["data/getTestsMetadata"]
-    }    
+    getTestsMetadata() {
+      return this.$store.getters["data/getTestsMetadata"];
+    }
   },
   beforeMount() {
-      this.$store.dispatch("data/fetchTestsMetadata");
+    console.log(this.$route.query.id);
+    this.$store.dispatch("data/fetchTestsMetadata");
   }
 };
 </script>

@@ -81,7 +81,11 @@ export default {
   },
   beforeMount() {
     if (LocalStorage.getItem("loggedIn")) {
-      //this.isAdmin();
+      if (LocalStorage.getItem("isAdmin")) {
+        this.$router.push("/admin");
+      } else {
+        this.$router.push({ name: "HomePage" });
+      }
     }
   },
   methods: {
@@ -118,24 +122,12 @@ export default {
             icon: "arrow_forward"
           });
           LocalStorage.set("loggedIn", true);
-          this.isAdmin();
-        })
-        .catch(error => {
-          this.$q.notify({
-            color: "negative",
-            message: error.response.data.message,
-            icon: "report_problem"
-          });
-        });
-    },
-    isAdmin() {
-      this.$axios
-        .post("/api/users/email/", {
-          email: this.login.email
-        })
-        .then(response => {
-          if (response.data.isAdmin === false) this.$router.push("/");
-          else this.$router.push("/admin");
+          LocalStorage.set("isAdmin", response.data.details.isAdmin);
+          if (response.data.details.isAdmin) {
+            this.$router.push("/admin");
+          } else {
+            this.$router.push({ name: "HomePage" });
+          }
         })
         .catch(error => {
           this.$q.notify({

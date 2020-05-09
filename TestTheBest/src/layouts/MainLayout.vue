@@ -58,7 +58,6 @@
     display: none;
   }
 }
-
 </style>
 
 <script>
@@ -110,15 +109,15 @@ export default {
       this.$axios
         .get("/api/auth/logout")
         .then(response => {
-          console.log(response.data);
           this.$q.notify({
             color: "green",
-
             message: response.data.message,
             icon: "arrow_forward"
           });
+
+          LocalStorage.set("loggedIn", false);
+          LocalStorage.set("isAdmin", null);
           this.$router.push("/login");
-         // LocalStorage.set("loggedIn", false);
         })
         .catch(error => {
           this.$q.notify({
