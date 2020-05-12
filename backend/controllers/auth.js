@@ -13,7 +13,10 @@ const userLogin = async (req, res) => {
       } else {
         req.session.id = user.id;
         req.session.token = user.token;
-        res.status(200).send({ message: "Successful login" });
+        res.status(200).send({ message: "Successful login", details:{
+          name: user.firstName + " " + user.lastName,
+          isAdmin: user.isAdmin
+        } });
       }
     }
 }

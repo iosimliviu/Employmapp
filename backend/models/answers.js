@@ -9,8 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         isCorrect: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
-        },
-        score: DataTypes.INTEGER
+        }
 
     });
 };

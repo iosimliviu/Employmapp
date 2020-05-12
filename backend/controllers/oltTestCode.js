@@ -1,4 +1,4 @@
-const CodeQuestionTest = require("../models/index.js").CodeQuestionTest;
+// const CodeQuestionTest = require("../models/index.js").CodeQuestionTest;
 const CodeQuestion = require("../models/index.js").CodeQuestion;
 const exec = require('child_process').execSync;
 const fs = require('fs');
@@ -13,7 +13,7 @@ async function createCodeQuestionTest(req, res) {
   let answer = req.body.answer;
 
   let codeQuestion = await CodeQuestion.findOne({
-    where:{
+    where: {
       id: req.body.codeQuestionId
     }
   });

@@ -7,6 +7,8 @@ router.get("/", userController.getAllUsers);
 router.post("/register", userController.createUser);
 router.delete("/:id", userController.deleteUser);
 router.put("/:id", userController.updateUser);
-router.get("/tests/:user_id", userController.getAllTestsForUser);
+router.post("/upload", userController.cvUpload);
+router.get("/feedback/:user_id", userController.getFeedbackForUser);
+
 
 module.exports = router;

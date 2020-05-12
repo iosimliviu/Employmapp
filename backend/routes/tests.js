@@ -2,9 +2,15 @@ const router = require("express").Router();
 const testController = require("../controllers/tests.js");
 const authService = require("../services/auth.js");
 
-router.get("/", authService.checkLogin, testController.getAllTest);
-router.get("/:id", authService.checkLogin, testController.getTest);
+router.get("/", testController.getAllTest);
+router.get("/:id", testController.getTest);
 router.post("/", testController.createTest);
-router.delete("/:id", authService.checkLogin, testController.deleteTest);
+router.delete("/:id", testController.deleteTest);
+router.get("/questions/:test_id", testController.getAllQuestionsForTest);
+router.get("/codeQuestions/:test_id", testController.getAllCodeQuestionsForTest);
+router.get("/data/:test_id", testController.getDataForTest);
+router.post("/testCode", testController.testCode)
+
+
 
 module.exports = router;

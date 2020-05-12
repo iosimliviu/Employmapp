@@ -1,10 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
     return sequelize.define("questions", {
         id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
         },
-        questionText: DataTypes.STRING
+        questionText: DataTypes.STRING,
+        score: DataTypes.INTEGER
     });
 };
