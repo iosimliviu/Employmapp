@@ -1,15 +1,15 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
-module.exports = function(ctx) {
+module.exports = function (ctx) {
 	return {
 		// app boot file (/src/boot)
 		// --> boot files are part of "main.js"
 		// https://quasar.dev/quasar-cli/cli-documentation/boot-files
-		boot: [ 'axios' ],
+		boot: ['axios'],
 
 		// https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
-		css: [ 'app.css' ],
+		css: ['app.css'],
 
 		// https://github.com/quasarframework/quasar/tree/dev/extras
 		extras: [
@@ -76,7 +76,7 @@ module.exports = function(ctx) {
 				// ]);
 				cfg.plugins.push(
 					new MonacoWebpackPlugin({
-						languages: [ 'javascript', 'python' ]
+						languages: ['javascript', 'python']
 					})
 				);
 			}

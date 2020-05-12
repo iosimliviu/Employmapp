@@ -50,6 +50,14 @@
                 type="password"
                 label="Password"
               />
+              <div class="q-pa-md">
+                <q-uploader
+                  label="Auto Uploader"
+                  auto-upload
+                  :factory="factoryFn"
+                  :field-name="file => 'background' + this.signup.firstName"
+                ></q-uploader>
+              </div>
               <q-btn @click="signUp" color="primary" label="Sign Up" />
             </q-tab-panel>
           </q-tab-panels>
@@ -89,6 +97,12 @@ export default {
     }
   },
   methods: {
+    factoryFn(files) {
+      return {
+        url: "http://localhost:8080/api/users/upload",
+        method: "POST"
+      };
+    },
     signUp() {
       this.$axios
         .post("/api/users/register", this.signup)
