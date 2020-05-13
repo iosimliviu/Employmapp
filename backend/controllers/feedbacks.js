@@ -64,8 +64,32 @@ const getAllFeedbacks = async (req, res) => {
     }
 };
 
+const deleteFeedback = async (req, res) => {
+    const feedbackId = req.params.id;
+    try {
+        Feedback.findOne({
+            where: {
+                id: feedbackId,
+            },
+        }).then((result) => {
+            if (result) {
+                result.destroy();
+                res.status(200).send({
+                    message: "Feedback deleted",
+                });
+            } else
+                res.status(404).send({
+                    message: "Could not find feedback",
+                });
+        });
+    } catch (e) {
+        res.status(500).send({ message: "Server error" });
+    }
+};
+
 module.exports = {
     createFeedback,
     updateFeedback,
-    getAllFeedbacks
+    getAllFeedbacks,
+    deleteFeedback
 };

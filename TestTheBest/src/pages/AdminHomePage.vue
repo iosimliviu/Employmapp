@@ -66,6 +66,12 @@
             label="UPDATE FEEDBACK"
             @click="prepareforUpdate"
           />
+          <q-btn
+            color="primary"
+            label="DELETE FEEDBACK"
+            type="submit"
+            @click="deleteFeedback(fetchFeedbackByUserId(selected[0].id).id)"
+          />
           <q-dialog v-model="feedbackUpdateDialog">
             <q-card>
               <form>
@@ -115,6 +121,7 @@
                     clickable
                     label="Save"
                     color="primary"
+                    type="submit"
                   />
                 </q-card-actions>
               </form>
@@ -302,7 +309,12 @@ export default {
         });
       }
     },
-    ...mapActions(["fetchFeedbacks", "addFeedback", "updateFeedback"])
+    ...mapActions([
+      "fetchFeedbacks",
+      "addFeedback",
+      "updateFeedback",
+      "deleteFeedback"
+    ])
   },
   beforeMount() {
     this.$store.dispatch("data/fetchUsers");

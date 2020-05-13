@@ -26,7 +26,11 @@ const actions = {
             updFeedback
         );
         commit('UPDATE_FEEDBACK', response.data);
-    }
+    },
+    async deleteFeedback({ commit }, id) {
+        await axios.delete(`/api/feedbacks/${id}`);
+        commit('REMOVE_FEEDBACK', id);
+    },
 };
 
 const mutations = {
@@ -37,7 +41,8 @@ const mutations = {
         if (index !== -1) {
             state.feedbacks.splice(index, 1, updFeedback);
         }
-    }
+    },
+    REMOVE_FEEDBACK: (state, id) => state.feedbacks = state.feedbacks.filter(feedback => feedback.id !== id),
 };
 
 export default {
