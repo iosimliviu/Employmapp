@@ -11,3 +11,4 @@ export async function fetchUsers({ commit }) {
 
     commit("SET_USERS", response.data);
 }
+

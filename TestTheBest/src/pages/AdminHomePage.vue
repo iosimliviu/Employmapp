@@ -15,9 +15,6 @@
         :selected.sync="selected"
         :pagination.sync="pagination"
         :filter="filter"
-        @focusin.native="activateNavigation"
-        @focusout.native="deactivateNavigation"
-        @keydown.native="onKey"
         class="bg-grey-3"
       >
         <template v-slot:top-right>
@@ -45,9 +42,156 @@
       </q-table>
     </div>
     <div v-if="selected.length !== 0" class="q-mt-md">
-      <q-card class="my-card">
+      <q-card v-if="fetchFeedbackByUserId(selected[0].id)" class="my-card">
         <q-card-section>
           {{ selected[0].lastName }} {{ selected[0].firstName }}
+          <br />
+          <q-rating
+            v-model="fetchFeedbackByUserId(selected[0].id).cvRating"
+            size="3em"
+            color="brown-5"
+            icon="pets"
+          /><br />
+          {{ fetchFeedbackByUserId(selected[0].id).cvFeedback }}<br />
+          <q-rating
+            v-model="fetchFeedbackByUserId(selected[0].id).interviewRating"
+            size="3em"
+            color="brown-5"
+            icon="pets"
+          /><br />
+          {{ fetchFeedbackByUserId(selected[0].id).interviewFeedback }}<br />
+          {{ fetchFeedbackByUserId(selected[0].id).mention }}<br />
+          <q-btn
+            color="primary"
+            label="UPDATE FEEDBACK"
+            @click="prepareforUpdate"
+          />
+          <q-dialog v-model="feedbackUpdateDialog">
+            <q-card>
+              <form>
+                <q-card-section>
+                  <div class="row q-mb-sm">
+                    <q-rating
+                      v-model="feedbackToUpdate.cvRating"
+                      size="1.5em"
+                      icon="thumb_up"
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <q-input
+                      outlined
+                      v-model="feedbackToUpdate.cvFeedback"
+                      label="CV Feedback"
+                      name="cvFeedback"
+                      autofocus
+                      class="col"
+                      clearable
+                      :rules="[val => !!val || 'Field is required']"
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <q-rating
+                      v-model="feedbackToUpdate.interviewRating"
+                      size="1.5em"
+                      icon="thumb_up"
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <q-input
+                      outlined
+                      v-model="feedbackToUpdate.interviewFeedback"
+                      label="Interview Feedback"
+                      name="interviewFeedback"
+                      class="col"
+                      clearable
+                      :rules="[val => !!val || 'Field is required']"
+                    />
+                  </div>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                  <q-btn
+                    @click="submitUpdateFeedback()"
+                    clickable
+                    label="Save"
+                    color="primary"
+                  />
+                </q-card-actions>
+              </form>
+            </q-card>
+          </q-dialog>
+        </q-card-section>
+      </q-card>
+      <q-card v-else class="my-card">
+        <q-card-section>
+          USER HAS NO FEEDBACK<br />
+          <q-btn
+            color="primary"
+            label="ADD FEEDBACK"
+            @click="feedbackDialog = true"
+          />
+        </q-card-section>
+        <q-dialog v-model="feedbackDialog">
+          <q-card>
+            <form>
+              <q-card-section>
+                <div class="row q-mb-sm">
+                  <q-rating
+                    v-model="feedbackToSubmit.cvRating"
+                    size="1.5em"
+                    icon="thumb_up"
+                  />
+                </div>
+                <div class="row q-mb-sm">
+                  <q-input
+                    outlined
+                    v-model="feedbackToSubmit.cvFeedback"
+                    label="CV Feedback"
+                    name="cvFeedback"
+                    autofocus
+                    class="col"
+                    clearable
+                    :rules="[val => !!val || 'Field is required']"
+                  />
+                </div>
+                <div class="row q-mb-sm">
+                  <q-rating
+                    v-model="feedbackToSubmit.interviewRating"
+                    size="1.5em"
+                    icon="thumb_up"
+                  />
+                </div>
+                <div class="row q-mb-sm">
+                  <q-input
+                    outlined
+                    v-model="feedbackToSubmit.interviewFeedback"
+                    label="Interview Feedback"
+                    name="interviewFeedback"
+                    class="col"
+                    clearable
+                    :rules="[val => !!val || 'Field is required']"
+                  />
+                </div>
+              </q-card-section>
+
+              <q-card-actions align="right">
+                <q-btn
+                  @click="submitFeedback()"
+                  clickable
+                  type="submit"
+                  label="Save"
+                  color="primary"
+                />
+              </q-card-actions>
+            </form>
+          </q-card>
+        </q-dialog>
+      </q-card>
+    </div>
+    <div v-else>
+      <q-card class="my-card">
+        <q-card-section>
+          SELECT A USER
         </q-card-section>
       </q-card>
     </div>
@@ -56,6 +200,7 @@
 
 <script>
 import { exportFile } from "quasar";
+import { mapGetters, mapActions } from "vuex";
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -78,7 +223,17 @@ export default {
   name: "AdminHomePage",
   data() {
     return {
-      alert: false,
+      feedbackToSubmit: {
+        userId: 0,
+        cvRating: 0,
+        cvFeedback: "",
+        interviewRating: 0,
+        interviewFeedback: "",
+        mention: ""
+      },
+      feedbackToUpdate: {},
+      feedbackUpdateDialog: false,
+      feedbackDialog: false,
       address: "",
       navigationActive: false,
       filter: "",
@@ -99,9 +254,25 @@ export default {
     },
     getUsers() {
       return this.$store.getters["data/getUsers"];
-    }
+    },
+    ...mapGetters(["fetchFeedbackByUserId"])
   },
   methods: {
+    submitFeedback() {
+      this.feedbackToSubmit.userId = this.selected[0].id;
+      this.addFeedback(this.feedbackToSubmit);
+    },
+    prepareforUpdate() {
+      this.feedbackUpdateDialog = true;
+      this.feedbackToUpdate = Object.assign(
+        {},
+        this.fetchFeedbackByUserId(this.selected[0].id)
+      );
+    },
+    submitUpdateFeedback() {
+      this.updateFeedback(this.feedbackToUpdate);
+      this.feedbackUpdateDialog = false;
+    },
     exportTable() {
       // naive encoding to csv format
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
@@ -131,100 +302,11 @@ export default {
         });
       }
     },
-    activateNavigation() {
-      this.navigationActive = true;
-    },
-
-    deactivateNavigation() {
-      this.navigationActive = false;
-    },
-
-    onKey(evt) {
-      if (
-        this.navigationActive !== true ||
-        [33, 34, 35, 36, 38, 40].indexOf(evt.keyCode) === -1 ||
-        this.$refs.myTable === void 0
-      ) {
-        return;
-      }
-
-      evt.preventDefault();
-
-      const { rowsNumber, rows } = this.$refs.myTable.computedData;
-
-      if (rows.length === 0) {
-        return;
-      }
-
-      const currentIndex =
-        this.selected.length > 0 ? rows.indexOf(this.selected[0]) : -1;
-      const currentPage = this.pagination.page;
-      const rowsPerPage =
-        this.pagination.rowsPerPage === 0
-          ? rowsNumber
-          : this.pagination.rowsPerPage;
-      const lastIndex = rows.length - 1;
-      const lastPage = Math.ceil(rowsNumber / rowsPerPage);
-
-      let index = currentIndex;
-      let page = currentPage;
-
-      switch (evt.keyCode) {
-        case 36: // Home
-          page = 1;
-          index = 0;
-          break;
-        case 35: // End
-          page = lastPage;
-          index = rowsPerPage - 1;
-          break;
-        case 33: // PageUp
-          page = currentPage <= 1 ? lastPage : currentPage - 1;
-          if (index < 0) {
-            index = 0;
-          }
-          break;
-        case 34: // PageDown
-          page = currentPage >= lastPage ? 1 : currentPage + 1;
-          if (index < 0) {
-            index = rowsPerPage - 1;
-          }
-          break;
-        case 38: // ArrowUp
-          if (currentIndex <= 0) {
-            page = currentPage <= 1 ? lastPage : currentPage - 1;
-            index = rowsPerPage - 1;
-          } else {
-            index = currentIndex - 1;
-          }
-          break;
-        case 40: // ArrowDown
-          if (currentIndex >= lastIndex) {
-            page = currentPage >= lastPage ? 1 : currentPage + 1;
-            index = 0;
-          } else {
-            index = currentIndex + 1;
-          }
-          break;
-      }
-
-      if (page !== this.pagination.page) {
-        this.pagination = {
-          ...this.pagination,
-          page
-        };
-
-        this.$nextTick(() => {
-          const { rows } = this.$refs.myTable.computedData;
-          this.selected = [rows[Math.min(index, rows.length - 1)]];
-        });
-      } else {
-        this.selected = [rows[index]];
-      }
-    }
+    ...mapActions(["fetchFeedbacks", "addFeedback", "updateFeedback"])
   },
   beforeMount() {
     this.$store.dispatch("data/fetchUsers");
+    this.fetchFeedbacks();
   }
 };
 </script>
