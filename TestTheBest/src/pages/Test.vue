@@ -1,66 +1,98 @@
 <template>
   <div class="container row">
     <div class="allQuestions">
-      <div
-        v-for="question in info.questions"
-        :key="question.id"
-        class="q-ma-lg"
+      <q-stepper
+        v-if="info.questions || info.codeQuestions"
+        v-model="step"
+        ref="stepper"
+        keep-alive
       >
-        <q-card>
-          <q-card-section>
-            <div class="text-h6">{{ question.questionText }}</div>
-          </q-card-section>
-        </q-card>
-        <q-list>
-          <q-item
-            v-for="answer in question.answers"
-            :key="answer.id"
-            tag="label"
-            v-ripple
-          >
-            <q-item-section avatar>
-              <q-radio v-model="ans" :val="answer.id" color="primary" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label>{{ answer.answerText }}</q-item-label>
-            </q-item-section>
-          </q-item>
-          <div class="q-px-sm">
-            Your selection is: <strong>{{ ans }}</strong>
+        <q-step
+          v-for="(question, i) in info.questions.concat(info.codeQuestions)"
+          :key="i + 'itq'"
+          :name="i"
+          :title="'Question ' + (i + 1)"
+          icon="settings"
+          :done="step > i"
+        >
+          <div v-if="question.answers" class="q-ma-lg">
+            <q-card>
+              <q-card-section>
+                <div class="text-h6">{{ question.questionText }}</div>
+              </q-card-section>
+            </q-card>
+
+            <q-list>
+              <q-item
+                v-for="answer in question.answers"
+                :key="answer.id + 'ita'"
+              >
+                <q-item-section avatar>
+                  <q-radio v-model="stepAnswer" :val="answer" color="primary" />
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label>{{ answer.answerText }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
           </div>
-        </q-list>
-      </div>
-      <div
-        v-for="codeQuestion in info.codeQuestions"
-        :key="codeQuestion.id"
-        class="q-ma-lg"
-      >
-        <q-card class="question">
-          <q-card-section>
-            <div class="text-h6">
-              {{ codeQuestion.testId }}{{ codeQuestion.questionText }}
-            </div>
-            <q-btn color="primary" size="24px">Run</q-btn>
-          </q-card-section>
-        </q-card>
+          <div v-else>
+            <q-card class="question">
+              <q-card-section>
+                <div class="text-h6">{{ question.questionText }}</div>
+                <q-btn
+                  @click="testCode(question.id)"
+                  color="primary"
+                  size="24px"
+                  >Run</q-btn
+                >
+              </q-card-section>
+            </q-card>
 
-        <MonacoEditor
-          theme="vs-dark"
-          language="python"
-          :options="options"
-          @change="onChange"
-          class="editor"
-          height="500px"
-        ></MonacoEditor>
+            <MonacoEditor
+              theme="vs-dark"
+              language="python"
+              :options="options"
+              @change="onChange"
+              class="editor"
+              height="500px"
+            ></MonacoEditor>
 
-        <q-card class="output">
-          <q-card-section>
-            <div class="text-h6">{{ guidanceData }}</div>
-          </q-card-section>
-        </q-card>
+            <q-card class="output">
+              <q-card-section>
+                <div class="text-h6">{{ codeGuidanceData }}</div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-step>
+        <template v-slot:navigation>
+          <q-stepper-navigation>
+            <q-btn
+              @click="$refs.stepper.next()"
+              color="primary"
+              :label="
+                step === info.questions.concat(info.codeQuestions).length - 1
+                  ? 'Finish'
+                  : 'Continue'
+              "
+            />
+            <q-btn
+              v-if="step > 0"
+              flat
+              color="primary"
+              @click="$refs.stepper.previous()"
+              label="Back"
+              class="q-ml-sm"
+            />
+          </q-stepper-navigation>
+        </template>
+      </q-stepper>
+
+      <div class="q-px-sm">
+        Your selection is: <strong>{{ stepAnswer }}</strong> Your selection is:
       </div>
     </div>
-    <!-- <Questions v-bind:questions="questions" /> -->
   </div>
 </template>
 
@@ -75,9 +107,13 @@ export default {
   },
   data() {
     return {
-      info: null,
+      step: 0,
+      stepAnswer: "",
+      info: {},
+      codeInput: "",
+      codeGuidanceData: {},
+      getAllQuestions: [],
       guidanceData: "Passed 2 out of 2",
-      ans: "",
       options: {
         //Monaco Editor Options
       }
@@ -85,8 +121,31 @@ export default {
   },
   methods: {
     onChange(value) {
-      console.log(value);
+      this.codeInput = value;
+      console.log(value + " " + this.codeInput);
+    },
+    testCode(codeQuestionId) {
+      this.$axios
+        .post(`/api/tests/testCode`, {
+          answer: this.codeInput,
+          codeQuestionId: codeQuestionId,
+          id: LocalStorage.getItem("userId")
+        })
+        .then(response => {
+          this.codeGuidanceData = response.data;
+          console.log(response.data);
+        })
+        .catch(error => {
+          this.$q.notify({
+            color: "negative",
+            message: "Something went wrong with the server, try again later",
+            icon: "report_problem"
+          });
+        });
     }
+  },
+  created() {
+    console.log(this.info);
   },
   beforeCreate() {
     console.log(this.$route.query.id);

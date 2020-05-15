@@ -136,6 +136,7 @@ export default {
             icon: "arrow_forward"
           });
           LocalStorage.set("loggedIn", true);
+          LocalStorage.set("userId", response.data.details.id);
           LocalStorage.set("isAdmin", response.data.details.isAdmin);
           if (response.data.details.isAdmin) {
             this.$router.push("/admin");

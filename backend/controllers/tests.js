@@ -8,38 +8,42 @@ const path = require('path');
 
 const CODE_FOLDER = "../code";
 
+//TO DO CONSOLE OUTPUT FOR USER
 //tests.result += NoPassedTests * codeQuestions.scorePerTest
 async function testCode(req, res) {
-    let sessionId = req.session.id;
-    let importInputCode = `from input_code${sessionId} import solution\n`;
-    let answer = req.body.answer;
-
-    let codeQuestion = await CodeQuestion.findOne({
-        where: {
-            id: req.body.codeQuestionId
-        }
-    });
-
-    let test = importInputCode + codeQuestion.test;
-
     try {
+        let sessionId = req.body.id;
+        let importInputCode = `from input_code${sessionId} import solution\n`;
+        let answer = req.body.answer;
+
+        let codeQuestion = await CodeQuestion.findOne({
+            where: {
+                id: req.body.codeQuestionId
+            }
+        });
+
+        let test = importInputCode + codeQuestion.test;
+
+
         fs.writeFileSync(path.join(__dirname, CODE_FOLDER, `input_code${sessionId}.py`), answer);
         fs.writeFileSync(path.join(__dirname, CODE_FOLDER, `test${req.body.codeQuestionId}.py`), test);
-        const proc = exec(`python code/test${req.body.codeQuestionId}.py`);//path.join(CODE_FOLDER, "test.py"));//
+        //const proc = exec(`pwd`);//path.join(CODE_FOLDER, "test.py"));//
+        const proc = exec(`python ../backend/code/test${req.body.codeQuestionId}.py`);//path.join(CODE_FOLDER, "test.py"));//
         const results = await proc.toString();
 
-        let regexPassedTests = /Passed (\d+) out/g;
+        let regexPassedTests = /Passed (\d+) out of (\d+) test cases/g;
         var match = await regexPassedTests.exec(results);
         let noPassedTests = match[1];
+        let noTotalTests = match[2];
 
         return res.send({
             results: results,
-            noPassedTests: noPassedTests
+            noPassedTests: noPassedTests,
+            noTotalTests
         });
     } catch (error) {
         console.log("An error occurred");
         console.log(error);
-
         return res.send("An error occurred.");
     }
 }
