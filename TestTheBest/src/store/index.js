@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import feedbacks from './storeFeedbacks';
+import tests from './storeTests'
 
 import data from "./data";
 
@@ -19,7 +20,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       data,
-      feedbacks
+      feedbacks,
+      tests
     },
 
     // enable strict mode (adds overhead!)

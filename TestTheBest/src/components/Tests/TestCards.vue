@@ -36,16 +36,15 @@ export default {
     goTest(test_id) {
       console.log(test_id);
       this.$router.push(`/test?id=${test_id}`);
-    }
+    },
+    ...mapActions(["fetchTestsMetadata"])
   },
   computed: {
-    getTestsMetadata() {
-      return this.$store.getters["data/getTestsMetadata"];
-    }
+    ...mapGetters(["getTestsMetadata"])
   },
   beforeMount() {
     console.log(this.$route.query.id);
-    this.$store.dispatch("data/fetchTestsMetadata");
+    this.fetchTestsMetadata();
   }
 };
 </script>

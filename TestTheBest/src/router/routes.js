@@ -15,7 +15,11 @@ const routes = [
 	{
 		path: '/admin',
 		component: () => import('layouts/AdminLayout.vue'),
-		children: [{ path: '', component: () => import('pages/AdminHomePage.vue') }]
+		children: [
+			{ path: '', component: () => import('pages/AdminHomePage.vue') },
+			{ path: '/create', component: () => import('pages/CreateTest.vue') },
+			{ path: '/adminTests', component: () => import('pages/adminTests.vue') }
+		]
 	}
 ];
 

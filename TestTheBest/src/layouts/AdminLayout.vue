@@ -58,10 +58,10 @@
     display: none;
   }
 }
-
 </style>
 
 <script>
+import { LocalStorage } from "quasar";
 export default {
   name: "Layout",
 
@@ -73,12 +73,12 @@ export default {
         {
           label: "Home",
           icon: "home",
-          to: "/"
+          to: "/admin"
         },
         {
-          label: "Settings",
-          icon: "settings",
-          to: "/settings"
+          label: "Tests",
+          icon: "description",
+          to: "/adminTests"
         },
 
         {
@@ -94,14 +94,15 @@ export default {
       this.$axios
         .get("/api/auth/logout")
         .then(response => {
-          console.log(response.data);
           this.$q.notify({
             color: "green",
-
             message: response.data.message,
             icon: "arrow_forward"
           });
-          document.cookie = "loggedIn=false";
+
+          LocalStorage.set("loggedIn", false);
+          LocalStorage.set("isAdmin", null);
+          this.$router.push("/login");
         })
         .catch(error => {
           this.$q.notify({

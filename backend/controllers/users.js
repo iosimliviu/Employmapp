@@ -3,7 +3,6 @@ const Feedback = require("../models/index.js").Feedback;
 const formidable = require('formidable')
 const path = require('path')
 const fs = require('fs')
-
 const adminconfig = require("../config/adminconfig.json");
 
 const cvUpload = (req, res) => {
@@ -23,6 +22,8 @@ const cvUpload = (req, res) => {
     console.log()
     res.send('Thank you')
   })
+
+
 }
 
 const getUser = async (req, res) => {

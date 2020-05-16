@@ -319,6 +319,10 @@ export default {
   beforeMount() {
     this.$store.dispatch("data/fetchUsers");
     this.fetchFeedbacks();
+
+    if (!LocalStorage.getItem("loggedIn")) {
+      this.$router.push("/login");
+    }
   }
 };
 </script>
