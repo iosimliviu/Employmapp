@@ -1,13 +1,10 @@
 <template>
   <div class="container row">
-    <div class="absolute-bottom-right text-center q-mb-lg q-mr-lg">
-      <q-btn
-        @click="showAddNote = true"
-        color="secondary"
-        size="24px"
-        label="1:32:33/2:00:00"
-      />
-    </div>
+    <q-btn
+      color="secondary"
+      size="24px"
+      :label="formattedTimeLeft + '/' + formattedTotalTime"
+    />
     <q-card v-if="isAttemptStarted === false">
       <q-card-section>
         <div class="text-h6">ARE YOU SURE YOU WANT TO START?</div>
@@ -146,10 +143,15 @@ export default {
   },
   data() {
     return {
+      timePassed: 0,
+      timerInterval: null,
       step: 0,
       isAttemptStarted: false,
       stepAnswer: "",
       info: {
+        test: {
+          duration: 0
+        },
         questions: [],
         codeQuestions: []
       },
@@ -164,7 +166,40 @@ export default {
       }
     };
   },
+  watch: {
+    timeLeft(newValue) {
+      if (newValue === 0) {
+        this.onTimesUp();
+      }
+    }
+  },
   computed: {
+    formattedTotalTime() {
+      const totalTime = this.info.test.duration;
+      const minutes = Math.floor(totalTime / 60);
+      let seconds = totalTime % 60;
+
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+
+      return `${minutes}:${seconds}`;
+    },
+
+    formattedTimeLeft() {
+      const timeLeft = this.timeLeft;
+      const minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+
+      return `${minutes}:${seconds}`;
+    },
+    timeLeft() {
+      return this.info.test.duration - this.timePassed;
+    },
     getNoQuestions() {
       return this.info.questions.length;
     },
@@ -177,6 +212,14 @@ export default {
     }
   },
   methods: {
+    onTimesUp() {
+      clearInterval(this.timerInterval);
+      this.done = true;
+      this.updateUserTest();
+    },
+    startTimer() {
+      this.timerInterval = setInterval(() => (this.timePassed += 1), 1000);
+    },
     startAttempt() {
       this.isAttemptStarted = true;
       this.$axios
@@ -206,6 +249,7 @@ export default {
             icon: "report_problem"
           });
         });
+      this.startTimer();
     },
     onNext() {
       if (this.stepAnswer == null) return;
