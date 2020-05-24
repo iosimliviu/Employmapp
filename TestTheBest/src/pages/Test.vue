@@ -1,5 +1,13 @@
 <template>
   <div class="container row">
+    <div class="absolute-bottom-right text-center q-mb-lg q-mr-lg">
+      <q-btn
+        @click="showAddNote = true"
+        color="secondary"
+        size="24px"
+        label="1:32:33/2:00:00"
+      />
+    </div>
     <q-card v-if="isAttemptStarted === false">
       <q-card-section>
         <div class="text-h6">ARE YOU SURE YOU WANT TO START?</div>
@@ -169,16 +177,11 @@ export default {
     }
   },
   methods: {
-    // formatDate(testTime) {
-    //   let timeStamp = Date.now();
-    //   let formattedString = date.formatDate(testTime, "YYYY-MM-DD HH:mm:ss");
-    //   return formattedString.toString;
-    // },
     startAttempt() {
       this.isAttemptStarted = true;
       this.$axios
         .post(`/api/userTests/`, {
-          userId: LocalStorage.getItem("loggedIn"),
+          userId: LocalStorage.getItem("userId"),
           testId: this.$route.query.id,
           startedAt: date.formatDate(Date.now(), "YYYY-MM-DD HH:mm:ss"),
           finishedAt: "",
@@ -205,12 +208,6 @@ export default {
         });
     },
     onNext() {
-      console.log("step val: " + this.step);
-      console.log("--------------");
-      console.log(
-        this.info.questions.concat(this.info.codeQuestions).length - 1
-      );
-      console.log("--------------");
       if (this.stepAnswer == null) return;
 
       const question = this.info.questions.concat(this.info.codeQuestions)[
@@ -252,7 +249,7 @@ export default {
     updateUserTest() {
       this.$axios
         .put(`/api/userTests/`, {
-          userId: LocalStorage.getItem("loggedIn"),
+          userId: LocalStorage.getItem("userId"),
           testId: this.$route.query.id,
           finishedAt: date.formatDate(Date.now(), "YYYY-MM-DD HH:mm:ss"),
           noIncorrect: this.noIncorrect,

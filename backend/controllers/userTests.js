@@ -78,9 +78,20 @@ const getUserTestsForUser = async (req, res) => {
         res.status(404).json(userTest);
 }
 
+const getAllUserTests = async (req, res) => {
+    try {
+        const userTests = await UserTest.findAll();
+        res.status(200).send(userTests);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: "server error" });
+    }
+}
+
 
 module.exports = {
     getUserTestsForUser,
     createUserTest,
-    updateUserTest
+    updateUserTest,
+    getAllUserTests
 };

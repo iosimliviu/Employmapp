@@ -42,6 +42,21 @@
       </q-table>
     </div>
     <div v-if="selected.length !== 0" class="q-mt-md">
+      <q-card
+        v-if="getUserTestsByUserId(selected[0].id).length != 0"
+        class="my-card"
+      >
+        <q-card-section>
+          {{ getUserTestsByUserId(selected[0].id) }}
+          \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+          {{ testArray }}
+        </q-card-section>
+      </q-card>
+      <q-card v-else class="my-card">
+        <q-card-section>
+          User has not taken any tests
+        </q-card-section>
+      </q-card>
       <q-card v-if="fetchFeedbackByUserId(selected[0].id)" class="my-card">
         <q-card-section>
           {{ selected[0].lastName }} {{ selected[0].firstName }}
@@ -231,6 +246,8 @@ export default {
   name: "AdminHomePage",
   data() {
     return {
+      testArray: [],
+      isSelecting: false,
       feedbackToSubmit: {
         userId: 0,
         cvRating: 0,
@@ -255,7 +272,13 @@ export default {
       ]
     };
   },
-
+  watch: {
+    selected: async function(sel) {
+      this.isSelecting = true;
+      this.testArray = await this.getAllUserTestData();
+      console.log(this.testArray);
+    }
+  },
   computed: {
     tableClass() {
       return this.navigationActive === true ? "shadow-8 no-outline" : void 0;
@@ -263,9 +286,24 @@ export default {
     getUsers() {
       return this.$store.getters["data/getUsers"];
     },
-    ...mapGetters(["fetchFeedbackByUserId"])
+    ...mapGetters([
+      "fetchFeedbackByUserId",
+      "getUserTestsByUserId",
+      "getTestForUserTest"
+    ])
   },
   methods: {
+    async getAllUserTestData() {
+      let testArray = [];
+      let userTestsForUser = await this.getUserTestsByUserId(
+        this.selected[0].id
+      );
+      for (var i = 0; i < userTestsForUser.length; i++) {
+        await this.fetchTestForUserTest(userTestsForUser[i].testId);
+        testArray.push(this.getTestForUserTest);
+      }
+      return testArray;
+    },
     submitFeedback() {
       this.feedbackToSubmit.userId = this.selected[0].id;
       this.addFeedback(this.feedbackToSubmit);
@@ -311,6 +349,8 @@ export default {
       }
     },
     ...mapActions([
+      "fetchTestForUserTest",
+      "fetchUserTests",
       "fetchFeedbacks",
       "addFeedback",
       "updateFeedback",
@@ -320,6 +360,7 @@ export default {
   beforeMount() {
     this.$store.dispatch("data/fetchUsers");
     this.fetchFeedbacks();
+    this.fetchUserTests();
 
     if (!LocalStorage.getItem("loggedIn")) {
       this.$router.push("/login");
