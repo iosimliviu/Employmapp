@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     noIncorrect: DataTypes.INTEGER,
     noPassedTests: DataTypes.INTEGER,
     noTotalTests: DataTypes.INTEGER,
-    answersGeneral: DataTypes.STRING,
+    done: DataTypes.BOOLEAN,
+    result: DataTypes.INTEGER
   });
 };

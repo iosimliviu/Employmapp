@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true
     },
     cvRating: DataTypes.INTEGER,
-    cvFeedback: DataTypes.STRING,
+    cvFeedback: DataTypes.TEXT,
     interviewRating: DataTypes.INTEGER,
-    interviewFeedback: DataTypes.STRING,
-    mention: DataTypes.STRING,
+    interviewFeedback: DataTypes.TEXT,
+    mention: DataTypes.TEXT,
   });
 };

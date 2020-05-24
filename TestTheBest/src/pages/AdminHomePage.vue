@@ -208,6 +208,7 @@
 <script>
 import { exportFile } from "quasar";
 import { mapGetters, mapActions } from "vuex";
+import { LocalStorage } from "quasar";
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;

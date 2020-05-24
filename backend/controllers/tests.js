@@ -9,7 +9,7 @@ const path = require('path');
 const CODE_FOLDER = "../code";
 
 //TO DO CONSOLE OUTPUT FOR USER
-//tests.result += NoPassedTests * codeQuestions.scorePerTest
+//userTests.result += NoPassedTests * codeQuestions.scorePerTest
 async function testCode(req, res) {
     try {
         let sessionId = req.body.id;
@@ -98,6 +98,7 @@ const getAllCodeQuestionsForTest = async (req, res) => {
 
 const getDataForTest = async (req, res) => {
     try {
+        var maxScore = 0;
         const test_id = req.params.test_id;
         const test = await Test.findOne({ where: { id: test_id } });
         if (!test) {
@@ -107,7 +108,12 @@ const getDataForTest = async (req, res) => {
                 where: {
                     testId: test_id
                 }
-            })
+            }).then(async (codeQuestionsFound) => {
+                for (let i = 0; i < codeQuestionsFound.length; i++) {
+                    maxScore += await codeQuestionsFound[i].scorePerTest * codeQuestionsFound[i].noTests;
+                }
+                return codeQuestionsFound;
+            });
             const questions = await Question.findAll({
                 raw: true, where: {
                     testId: test_id
@@ -115,16 +121,28 @@ const getDataForTest = async (req, res) => {
             }).then(async (questionsFound) => {
                 for (let i = 0; i < questionsFound.length; i++) {
                     questionsFound[i].answers = await getAllAnswersQuestion(questionsFound[i].id)
+                    maxScore += await questionsFound[i].score
                 }
                 return questionsFound;
             });
-            res.status(200).send({ test, codeQuestions, questions });
+            res.status(200).send({ test, codeQuestions, questions, maxScore });
         }
     } catch (e) {
         console.error(e);
         res.status(500).send({ message: "server error" });
     }
 }
+
+const getMaxScore = async (req, res) => {
+    try {
+        const test_id = req.params.test_id;
+        const test = await Test.findOne({ where: { id: test_id } });
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: "server error" });
+    }
+}
+
 
 const createTest = async (req, res) => {
     if (
@@ -151,6 +169,7 @@ const createTest = async (req, res) => {
             let codeQuestion = new CodeQuestion();
             codeQuestion.questionText = codeQuestions[i].questionText;
             codeQuestion.scorePerTest = codeQuestions[i].scorePerTest;
+            codeQuestion.noTests = codeQuestions[i].noTests;
             codeQuestion.test = codeQuestions[i].test;
             codeQuestion.testId = test.id;
             await codeQuestion.save();
@@ -160,6 +179,7 @@ const createTest = async (req, res) => {
         for (let i = 0; i < questions.length; i++) {
             let question = new Question();
             question.questionText = questions[i].questionText;
+            question.score = questions[i].score;
             question.testId = test.id;
             await question.save();
 
@@ -168,7 +188,6 @@ const createTest = async (req, res) => {
                 let answer = new Answer();
                 answer.answerText = answers[i].answerText;
                 answer.isCorrect = answers[i].isCorrect;
-                answer.score = answers[i].score;
                 answer.questionId = question.id;
                 await answer.save();
             }

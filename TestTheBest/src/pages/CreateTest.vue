@@ -39,6 +39,11 @@
             />
             <q-input
               outlined
+              v-model.number="codeQuestion.noTests"
+              type="number"
+            />
+            <q-input
+              outlined
               v-model="codeQuestion.questionText"
               label="Outlined"
             />
@@ -58,12 +63,13 @@
       />
       <q-btn @click="addQuestion" label="add Question" color="primary" />
       <q-btn @click="resetTest" label="reset" color="primary" />
-      <q-btn @click="createTest" label="create" color="primary" />
+      <q-btn @click="createTest" type="submit" label="create" color="primary" />
     </q-list>
   </div>
 </template>
 
 <script>
+import { LocalStorage } from "quasar";
 export default {
   data() {
     return {
@@ -76,6 +82,7 @@ export default {
           {
             questionText: "1DEFAULT CODE QUESTION",
             scorePerTest: 1,
+            noTests: 2,
             test: "\n1copy and paste you python test in here\n"
           }
         ],
@@ -124,6 +131,7 @@ export default {
             icon: "report_problem"
           });
         });
+      this.$router.push("/adminTests");
     },
     resetTest() {
       this.testInstance = {
@@ -137,6 +145,7 @@ export default {
       this.testInstance.codeQuestions.push({
         questionText: "a",
         scorePerTest: 2,
+        noTests: 2,
         test: "\na\n"
       });
       console.log(this.testInstance);

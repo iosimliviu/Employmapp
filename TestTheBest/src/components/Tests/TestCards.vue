@@ -17,7 +17,12 @@
           <q-separator dark inset />
           {{ test.duration }}
           <q-card-actions align="around">
-            <q-btn @click="goTest(test.id)" color="secondary" size="24px" flat
+            <q-btn
+              @click="goTest(test.id)"
+              type="submit"
+              color="secondary"
+              size="24px"
+              flat
               >Take Test</q-btn
             >
           </q-card-actions>

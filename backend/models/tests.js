@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     duration: DataTypes.INTEGER,
     name: DataTypes.STRING,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     type: DataTypes.STRING
   });
 };

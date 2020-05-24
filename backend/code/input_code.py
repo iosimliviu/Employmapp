@@ -1,4 +1,3 @@
-
 def solution(arr):
   maximum = 0
   

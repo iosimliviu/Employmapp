@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        answerText: DataTypes.STRING,
+        answerText: DataTypes.TEXT,
         isCorrect: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
