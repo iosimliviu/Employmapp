@@ -9,7 +9,7 @@ const CodeQuestion = sequelize.import("./codeQuestions.js");
 
 User.hasOne(Feedback, { onDelete: "cascade", hooks: "true" });
 User.hasMany(UserTest, { onDelete: "cascade", hooks: "true" });
-Test.hasMany(UserTest);
+Test.hasMany(UserTest, { onDelete: "cascade", hooks: "true" });
 Test.hasMany(Question);
 Test.hasMany(CodeQuestion);
 Question.hasMany(Answer, { onDelete: "cascade", hooks: "true" });

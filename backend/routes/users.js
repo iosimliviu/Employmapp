@@ -9,6 +9,6 @@ router.delete("/:id", userController.deleteUser);
 router.put("/:id", userController.updateUser);
 router.post("/upload", userController.cvUpload);
 router.get("/feedback/:user_id", userController.getFeedbackForUser);
-
+router.post("/registerObserver", userController.createObeserver);
 
 module.exports = router;

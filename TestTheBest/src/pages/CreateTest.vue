@@ -37,16 +37,19 @@
               v-model.number="codeQuestion.scorePerTest"
               type="number"
             />
+
             <q-input
               outlined
               v-model.number="codeQuestion.noTests"
               type="number"
             />
+
             <q-input
               outlined
               v-model="codeQuestion.questionText"
               label="Outlined"
             />
+            <q-input outlined v-model="codeQuestion.input" label="Outlined" />
             <q-input outlined v-model="codeQuestion.test" label="Outlined" />
           </q-card-section>
         </q-card>
@@ -63,7 +66,16 @@
       />
       <q-btn @click="addQuestion" label="add Question" color="primary" />
       <q-btn @click="resetTest" label="reset" color="primary" />
-      <q-btn @click="createTest" type="submit" label="create" color="primary" />
+      <q-btn
+        :to="`/adminTests`"
+        @click.native="
+          createTest();
+          $router.go();
+        "
+        type="submit"
+        label="create"
+        color="primary"
+      />
     </q-list>
   </div>
 </template>
@@ -81,6 +93,7 @@ export default {
         codeQuestions: [
           {
             questionText: "1DEFAULT CODE QUESTION",
+            input: "Default signature",
             scorePerTest: 1,
             noTests: 2,
             test: "\n1copy and paste you python test in here\n"
@@ -146,6 +159,7 @@ export default {
         questionText: "a",
         scorePerTest: 2,
         noTests: 2,
+        input: "func def",
         test: "\na\n"
       });
       console.log(this.testInstance);

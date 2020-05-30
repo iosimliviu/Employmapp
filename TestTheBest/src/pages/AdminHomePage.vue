@@ -8,7 +8,7 @@
         :class="tableClass"
         tabindex="0"
         title="Treats"
-        :data="getUsers"
+        :data="getApplicants"
         :columns="columns"
         row-key="id"
         selection="single"
@@ -46,10 +46,24 @@
         v-if="getUserTestsByUserId(selected[0].id).length != 0"
         class="my-card"
       >
-        <q-card-section>
-          {{ getUserTestsByUserId(selected[0].id) }}
-          \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-          {{ testArray }}
+        <q-card-section v-for="(pair, i) in pairs" :key="i">
+          Test id: {{ pair.resultData.testId }} <br />
+          Started at: {{ pair.resultData.startedAt }}<br />
+          Number of correct answers:
+          {{ pair.resultData.noCorrect - pair.resultData.noIncorrect }}/{{
+            pair.resultData.noCorrect
+          }}<br />
+          Number passed coding unit tests:
+          {{ pair.resultData.noPassedTests }}/{{ pair.resultData.noTotalTests
+          }}<br />
+          <b
+            >Final test score: {{ pair.resultData.result }}/{{
+              pair.testData.maxScore
+            }}</b
+          >
+          <b>{{ pair.testData.test.name }}</b>
+
+          <br />
         </q-card-section>
       </q-card>
       <q-card v-else class="my-card">
@@ -280,13 +294,25 @@ export default {
     }
   },
   computed: {
+    pairs() {
+      if (this.selected[0] && this.testArray.length) {
+        return this.getUserTestsByUserId(this.selected[0].id).map(
+          (result, i) => {
+            if (this.testArray[i])
+              return {
+                resultData: result,
+                testData: this.testArray[i]
+              };
+          }
+        );
+      }
+    },
     tableClass() {
       return this.navigationActive === true ? "shadow-8 no-outline" : void 0;
     },
-    getUsers() {
-      return this.$store.getters["data/getUsers"];
-    },
     ...mapGetters([
+      "getApplicants",
+      "getUsers",
       "fetchFeedbackByUserId",
       "getUserTestsByUserId",
       "getTestForUserTest"
@@ -349,6 +375,7 @@ export default {
       }
     },
     ...mapActions([
+      "fetchUsers",
       "fetchTestForUserTest",
       "fetchUserTests",
       "fetchFeedbacks",
@@ -358,7 +385,7 @@ export default {
     ])
   },
   beforeMount() {
-    this.$store.dispatch("data/fetchUsers");
+    this.fetchUsers();
     this.fetchFeedbacks();
     this.fetchUserTests();
 

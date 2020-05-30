@@ -140,6 +140,8 @@ export default {
           LocalStorage.set("isAdmin", response.data.details.isAdmin);
           if (response.data.details.isAdmin) {
             this.$router.push("/admin");
+          } else if (response.data.details.isObserver) {
+            this.$router.push("/observer");
           } else {
             this.$router.push({ name: "HomePage" });
           }

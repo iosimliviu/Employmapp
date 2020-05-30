@@ -3,7 +3,7 @@
     <q-header elevated class="bg-black">
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-toolbar-title>TestTheBest ADMIN</q-toolbar-title>
+        <q-toolbar-title>TestTheBest OBSERVER</q-toolbar-title>
       </q-toolbar>
     </q-header>
 
@@ -81,11 +81,6 @@ export default {
           to: "/adminTests"
         },
         {
-          label: "Observer",
-          icon: "group",
-          to: "/observers"
-        },
-        {
           label: "Logout",
           icon: "group",
           to: "/login"
@@ -105,7 +100,7 @@ export default {
           });
 
           LocalStorage.set("loggedIn", false);
-          LocalStorage.set("isAdmin", null);
+          LocalStorage.set("isObserver", null);
           this.$router.push("/login");
         })
         .catch(error => {

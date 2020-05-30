@@ -18,6 +18,16 @@ const routes = [
 		children: [
 			{ path: '', component: () => import('pages/AdminHomePage.vue') },
 			{ path: '/create', component: () => import('pages/CreateTest.vue') },
+			{ path: '/adminTests', component: () => import('pages/adminTests.vue') },
+			{ path: '/observers', component: () => import('pages/AdminObserver.vue') }
+		]
+	},
+	{
+		path: '/observer',
+		component: () => import('layouts/ObserverLayout.vue'),
+		children: [
+			{ path: '', component: () => import('pages/AdminHomePage.vue') },
+			{ path: '/create', component: () => import('pages/CreateTest.vue') },
 			{ path: '/adminTests', component: () => import('pages/adminTests.vue') }
 		]
 	}

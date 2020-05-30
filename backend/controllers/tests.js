@@ -168,6 +168,7 @@ const createTest = async (req, res) => {
         for (let i = 0; i < codeQuestions.length; i++) {
             let codeQuestion = new CodeQuestion();
             codeQuestion.questionText = codeQuestions[i].questionText;
+            codeQuestion.input = codeQuestions[i].input;
             codeQuestion.scorePerTest = codeQuestions[i].scorePerTest;
             codeQuestion.noTests = codeQuestions[i].noTests;
             codeQuestion.test = codeQuestions[i].test;

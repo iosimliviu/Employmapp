@@ -17,10 +17,10 @@
           <q-separator dark inset />
           {{ test.duration }}
           <q-card-actions align="around">
-            <q-btn @click="alert = true" color="secondary" size="24px" flat
+            <q-btn @click="onItemClick(test)" color="secondary" size="24px" flat
               >Show tests details</q-btn
             >
-            <q-btn @click="alert = true" color="secondary" size="24px" flat
+            <q-btn @click="onItemClick(test)" color="secondary" size="24px" flat
               >delete test</q-btn
             >
           </q-card-actions>
@@ -29,12 +29,12 @@
       <q-dialog v-model="alert">
         <q-card>
           <q-card-section class="q-pt-none">
-            Are you sure you want to delete "{{ test.name }}" test?
+            Are you sure you want to delete "{{ selectedTestInfo.name }}" test?
           </q-card-section>
 
           <q-card-actions align="right">
             <q-btn
-              @click="deleteTestsMetadataById(test.id)"
+              @click="deleteTestsMetadataById(selectedTestInfo.id)"
               type="submit"
               flat
               label="DELETE"
@@ -54,9 +54,13 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "TestCardsAdmin",
   data() {
-    return { alert: false, testInfo: {} };
+    return { alert: false, selectedTestInfo: {} };
   },
   methods: {
+    onItemClick(testInfo) {
+      this.alert = true;
+      this.selectedTestInfo = testInfo;
+    },
     goDataForTest(test_id) {
       this.$axios
         .get(`/api/tests/data/${test_id}`)

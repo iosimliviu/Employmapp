@@ -2,15 +2,17 @@ const CodeQuestion = require("../models/index.js").CodeQuestion;
 
 const createCodeQuestion = async (req, res) => {
     try {
-        const { testId, questionText, scorePerTest, noTests, test } = req.body;
+        const { testId, questionText, scorePerTest, noTests, input, test } = req.body;
 
         await CodeQuestion.create({
             testId,
             questionText,
             scorePerTest,
             noTests,
+            input,
             test
         });
+
         res.status(200).send({ message: "CodeQuestion inserted" });
     } catch (e) {
         console.error(e);

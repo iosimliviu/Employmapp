@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import users from './storeUsers'
 import feedbacks from './storeFeedbacks';
 import tests from './storeTests'
 import userTests from './storeUserTests'
@@ -21,6 +22,7 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       data,
+      users,
       feedbacks,
       tests,
       userTests

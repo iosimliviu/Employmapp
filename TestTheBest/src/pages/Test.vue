@@ -9,7 +9,11 @@
       <q-card-section>
         <div class="text-h6">ARE YOU SURE YOU WANT TO START?</div>
         <q-btn @click="startAttempt" color="primary" size="24px">YES</q-btn>
-        <q-btn @click="$router.push('/')" color="primary" size="24px"
+        <q-btn
+          :to="`/`"
+          @click.native="$router.go()"
+          color="primary"
+          size="24px"
           >NO, TAKE ME BACK</q-btn
         >
       </q-card-section>
@@ -17,7 +21,16 @@
     <div v-else>
       <q-card v-if="done">
         <q-card-section>
-          <div class="text-h6">TEST FINISHED</div>
+          <div class="text-h6">
+            TEST FINISHED
+            <q-btn
+              :to="`/`"
+              @click.native="$router.go()"
+              color="primary"
+              size="24px"
+              >go home</q-btn
+            >
+          </div>
         </q-card-section>
       </q-card>
       <div v-else class="allQuestions">
@@ -75,13 +88,15 @@
               </q-card>
 
               <MonacoEditor
+                :value="question.input"
                 theme="vs-dark"
                 language="python"
                 :options="options"
                 @change="onChange"
                 class="editor"
                 height="500px"
-              ></MonacoEditor>
+                >asddddddddddd</MonacoEditor
+              >
 
               <q-card class="output">
                 <q-card-section>
@@ -109,14 +124,6 @@
                 "
                 color="primary"
                 label="Continue"
-              />
-              <q-btn
-                v-if="step > 0"
-                flat
-                color="primary"
-                @click="$refs.stepper.previous()"
-                label="Back"
-                class="q-ml-sm"
               />
             </q-stepper-navigation>
           </template>
@@ -153,7 +160,11 @@ export default {
           duration: 0
         },
         questions: [],
-        codeQuestions: []
+        codeQuestions: [
+          {
+            input: ""
+          }
+        ]
       },
       codeInput: "",
       codeGuidanceData: {},
@@ -288,6 +299,7 @@ export default {
       this.done = true;
       this.codeGuidanceData = {};
       console.log(this.result);
+      clearInterval(this.timerInterval);
       this.updateUserTest();
     },
     updateUserTest() {
@@ -343,7 +355,6 @@ export default {
     }
   },
   beforeCreate() {
-    console.log(this.$route.query.id);
     this.$axios
       .get(`/api/tests/data/${this.$route.query.id}`)
       .then(response => (this.info = response.data))
@@ -360,6 +371,17 @@ export default {
       this.$router.push("/login");
     }
   }
+  // beforeUpdate() {
+  // if (localStorage.getItem("reloaded")) {
+  //       // The page was just reloaded. Clear the value from local storage
+  //       // so that it will reload the next time this page is visited.
+  //       localStorage.removeItem("reloaded");
+  //     } else {
+  //       // Set a flag so that we know not to reload the page twice.
+  //       localStorage.setItem("reloaded", "1");
+  //       location.reload();
+  //     }
+  // }
 };
 </script>
 

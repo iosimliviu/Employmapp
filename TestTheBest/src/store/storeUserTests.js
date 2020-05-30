@@ -10,6 +10,9 @@ const getters = {
     getUserTestsByUserId: (state) => (user_id) => {
         return state.userTests.filter(userTest => userTest.userId === user_id)
     },
+    getUserTestByTestId: (state) => (test_id) => {
+        return state.userTests.find(userTest => userTest.testId === test_id)
+    },
     getTestForUserTest: (state) => state.test
 };
 

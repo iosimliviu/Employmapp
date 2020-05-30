@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         questionText: DataTypes.TEXT,
+        input: DataTypes.TEXT,
         scorePerTest: DataTypes.INTEGER,
         noTests: DataTypes.INTEGER,
         test: DataTypes.TEXT

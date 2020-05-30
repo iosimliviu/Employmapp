@@ -5,7 +5,10 @@ const state = {
 };
 
 const getters = {
-    getTestsMetadata: (state) => state.testsMetadata
+    getTestsMetadata: (state) => state.testsMetadata,
+    getTestById: (state) => (id) => {
+        return state.testsMetadata.find(testsMetadata => testsMetadata.id === id)
+    },
 };
 
 const actions = {
@@ -13,7 +16,7 @@ const actions = {
         const response = await axios.get("/api/tests");
         commit("SET_TESTS_METADATA", response.data);
     },
-    async  deleteTestsMetadataById({ commit }, id) {
+    async deleteTestsMetadataById({ commit }, id) {
         await axios.delete(`/api/tests/${id}`);
         commit('REMOVE_TEST', id);
     }

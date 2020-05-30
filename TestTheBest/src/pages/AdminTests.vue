@@ -14,6 +14,9 @@ import TestCardsAdmin from "../components/Tests/TestCardsAdmin.vue";
 
 export default {
   name: "AdminTests",
+  data() {
+    return { updComponent: 0 };
+  },
   components: {
     TestCardsAdmin
   },
