@@ -40,6 +40,278 @@
       </q-table>
     </div>
     <div v-if="selected.length !== 0" class="q-ma-md row justify-center">
+      <q-card v-if="fetchFeedbackByUserId(selected[0].id)" class="feedbackCard">
+        <q-card-section class="q-pa-lg">
+          <q-list>
+            <p>
+              <b
+                >Feedback for {{ selected[0].lastName }}
+                {{ selected[0].firstName }}</b
+              >
+            </p>
+            <q-item>
+              <q-item-section>
+                CV rating:
+              </q-item-section>
+              <q-item-section>
+                <q-rating
+                  v-model="fetchFeedbackByUserId(selected[0].id).cvRating"
+                  size="2em"
+                  color="primary"
+                  icon="fiber_manual_record"
+                  readonly
+                />
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                CV Feedback:
+              </q-item-section>
+            </q-item>
+            <q-item
+              class="resultList rounded-borders shadow-box"
+              :class="`shadow-1`"
+            >
+              <q-item-section>
+                {{ fetchFeedbackByUserId(selected[0].id).cvFeedback }}
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                Interview rating:
+              </q-item-section>
+              <q-item-section>
+                <q-rating
+                  v-model="
+                    fetchFeedbackByUserId(selected[0].id).interviewRating
+                  "
+                  size="2em"
+                  color="primary"
+                  icon="fiber_manual_record"
+                  readonly
+                /> </q-item-section
+            ></q-item>
+            <q-item>
+              <q-item-section>
+                Interview Feedback:
+              </q-item-section>
+            </q-item>
+            <q-item
+              class="resultList rounded-borders shadow-box"
+              :class="`shadow-1`"
+            >
+              {{ fetchFeedbackByUserId(selected[0].id).interviewFeedback }}
+            </q-item>
+            <q-item>
+              <q-item-section>
+                Other Mentions:
+              </q-item-section>
+            </q-item>
+            <q-item
+              class="resultList rounded-borders shadow-box"
+              :class="`shadow-1`"
+            >
+              {{ fetchFeedbackByUserId(selected[0].id).mention }}</q-item
+            >
+          </q-list>
+          <div class="row justify-center">
+            <q-btn
+              class="q-ma-lg col-12 col-md-3"
+              color="primary"
+              label="UPDATE FEEDBACK"
+              @click="prepareforUpdate"
+            />
+            <q-btn
+              class="q-ma-lg col-12 col-md-3"
+              color="grey-9"
+              label="DELETE FEEDBACK"
+              type="submit"
+              @click="deleteFeedback(fetchFeedbackByUserId(selected[0].id).id)"
+            />
+          </div>
+
+          <q-dialog v-model="feedbackUpdateDialog">
+            <q-card class="feedbackDialog">
+              <q-card-section class="row">
+                <div class="q-pr-lg text-h6">
+                  Feedback form
+                </div>
+                <q-space />
+                <q-btn v-close-popup dense flat rounded icon="close" />
+              </q-card-section>
+              <form>
+                <q-card-section class="q-pa-lg">
+                  <div class="row q-mb-sm">
+                    <p class="row q-mr-lg">CV Rating:</p>
+                    <q-rating
+                      v-model="feedbackToUpdate.cvRating"
+                      size="2em"
+                      color="primary"
+                      icon="fiber_manual_record"
+                      autofocus
+                    />
+                  </div>
+                  <div class="row q-mb-lg">
+                    <q-input
+                      type="textarea"
+                      v-model="feedbackToUpdate.cvFeedback"
+                      label="CV Feedback"
+                      name="cvFeedback"
+                      class="col"
+                      clearable
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <p class="row q-mr-lg">Interview Rating:</p>
+                    <q-rating
+                      v-model="feedbackToUpdate.interviewRating"
+                      size="2em"
+                      color="primary"
+                      icon="fiber_manual_record"
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <q-input
+                      type="textarea"
+                      v-model="feedbackToUpdate.interviewFeedback"
+                      label="Interview Feedback"
+                      name="interviewFeedback"
+                      class="col"
+                      clearable
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <q-input
+                      type="textarea"
+                      v-model="feedbackToUpdate.mention"
+                      label="Other mentions"
+                      name="mention"
+                      class="col"
+                      clearable
+                    />
+                  </div>
+                </q-card-section>
+                <div class="q-pa-lg row justify-center">
+                  <q-btn
+                    class="q-ma-lg col-12 col-md-3"
+                    color="primary"
+                    label="Save"
+                    @click="submitUpdateFeedback()"
+                    type="submit"
+                  />
+                  <q-btn
+                    v-close-popup
+                    class="q-ma-lg col-12 col-md-3"
+                    color="grey-9"
+                    label="Cancel"
+                  />
+                </div>
+              </form>
+            </q-card>
+          </q-dialog>
+        </q-card-section>
+      </q-card>
+      <q-card v-else class="col noSelection column items-center">
+        <q-card-section class="column items-center">
+          <div class="text-h6">
+            APPLICANT HAS NO FEEDBACK
+          </div>
+        </q-card-section>
+        <q-card-section class="column items-center">
+          <q-btn
+            color="primary"
+            label="ADD FEEDBACK"
+            @click="feedbackDialog = true"
+          />
+        </q-card-section>
+        <q-card-section class="column items-center">
+          <img
+            style="width:42%"
+            src="../assets/undraw_empty_xct9.svg"
+            alt="APPLICANT HAS NO FEEDBACK"
+          />
+        </q-card-section>
+        <q-dialog v-model="feedbackDialog">
+          <q-card class="feedbackDialog">
+            <q-card-section class="row">
+              <div class="q-pr-lg text-h6">
+                Feedback form
+              </div>
+              <q-space />
+              <q-btn v-close-popup dense flat rounded icon="close" />
+            </q-card-section>
+            <form>
+              <q-card-section class="q-pa-lg">
+                <div class="row q-mb-sm">
+                  <p class="row q-mr-lg">CV Rating:</p>
+                  <q-rating
+                    v-model="feedbackToSubmit.cvRating"
+                    size="2em"
+                    color="primary"
+                    icon="fiber_manual_record"
+                    autofocus
+                  />
+                </div>
+                <div class="row q-mb-lg">
+                  <q-input
+                    type="textarea"
+                    v-model="feedbackToSubmit.cvFeedback"
+                    label="CV Feedback"
+                    name="cvFeedback"
+                    class="col"
+                    clearable
+                  />
+                </div>
+                <div class="row q-mb-sm">
+                  <p class="row q-mr-lg">Interview Rating:</p>
+                  <q-rating
+                    v-model="feedbackToSubmit.interviewRating"
+                    size="2em"
+                    color="primary"
+                    icon="fiber_manual_record"
+                  />
+                </div>
+                <div class="row q-mb-sm">
+                  <q-input
+                    type="textarea"
+                    v-model="feedbackToSubmit.interviewFeedback"
+                    label="Interview Feedback"
+                    name="interviewFeedback"
+                    class="col"
+                    clearable
+                  />
+                </div>
+                <div class="row q-mb-sm">
+                  <q-input
+                    type="textarea"
+                    v-model="feedbackToSubmit.mention"
+                    label="Other mentions"
+                    name="mention"
+                    class="col"
+                    clearable
+                  />
+                </div>
+              </q-card-section>
+              <div class="q-pa-lg row justify-center">
+                <q-btn
+                  class="q-ma-lg col-12 col-md-3"
+                  @click="submitFeedback()"
+                  clickable
+                  type="submit"
+                  label="Save"
+                  color="primary"
+                />
+                <q-btn
+                  v-close-popup
+                  class="q-ma-lg col-12 col-md-3"
+                  color="grey-9"
+                  label="Cancel"
+                />
+              </div>
+            </form>
+          </q-card>
+        </q-dialog>
+      </q-card>
       <q-card
         v-if="getUserTestsByUserId(selected[0].id).length != 0"
         class="resultCard"
@@ -131,7 +403,7 @@
               <q-item v-ripple>
                 <q-item-section>
                   <p>
-                    <b>TID {{ pair.resultData.testId }}</b></b>
+                    <b>TID {{ pair.resultData.testId }}</b>
                   </p>
                 </q-item-section>
               </q-item>
@@ -139,235 +411,34 @@
           </q-card-section>
         </q-card-section>
       </q-card>
-      <q-card v-else class="resultCard">
-        <q-card-section>
-          User has not taken any tests
-        </q-card-section>
-      </q-card>
-      <q-card v-if="fetchFeedbackByUserId(selected[0].id)" class="feedbackCard">
-        <q-card-section class="q-pa-lg">
-          <q-list>
-            
-          <p><b>Feedback for {{ selected[0].lastName }} {{ selected[0].firstName }}</b></p>
-          <q-item>
-            <q-item-section>
-              CV rating:
-              </q-item-section>
-            <q-item-section >
-          <q-rating
-            v-model="fetchFeedbackByUserId(selected[0].id).cvRating"
-            size="2em"
-            color="primary"
-            icon="fiber_manual_record"
-            readonly
-          />
-          </q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section>
-          CV Feedback:
-          </q-item-section>
-          </q-item>
-          <q-item class="resultList rounded-borders shadow-box"
-              :class="`shadow-1`">
-            <q-item-section >
-          {{ fetchFeedbackByUserId(selected[0].id).cvFeedback }}
-          </q-item-section>
-          </q-item>
-          <q-item>
-            <q-item-section>
-              Interview rating:
-              </q-item-section>
-            <q-item-section >
-          <q-rating
-            v-model="fetchFeedbackByUserId(selected[0].id).interviewRating"
-            size="2em"
-            color="primary"
-            icon="fiber_manual_record"
-            readonly
-          />
-          </q-item-section></q-item>
-          <q-item>
-            <q-item-section>
-          Interview Feedback:
-          </q-item-section>
-          </q-item>
-          <q-item class="resultList rounded-borders shadow-box"
-              :class="`shadow-1`">
-          {{ fetchFeedbackByUserId(selected[0].id).interviewFeedback }}
-          </q-item>
-          <q-item>
-            <q-item-section>
-          Other Mentions:
-          </q-item-section>
-          </q-item>
-          <q-item class="resultList rounded-borders shadow-box"
-              :class="`shadow-1`">
-          {{ fetchFeedbackByUserId(selected[0].id).mention }}</q-item>
-          </q-list>
-          <div class="row justify-center">
-          <q-btn
-          class="q-ma-lg col-12 col-md-3"
-            color="primary"
-            label="UPDATE FEEDBACK"
-            @click="prepareforUpdate"
-          />
-          <q-btn
-          class="q-ma-lg col-12 col-md-3"
-            color="grey-9"
-            label="DELETE FEEDBACK"
-            type="submit"
-            @click="deleteFeedback(fetchFeedbackByUserId(selected[0].id).id)"
-          />
+      <q-card v-else class="resultCard column items-center justify-center">
+        <q-card-section class="column items-center">
+          <div class="q-mb-lg text-h6">
+            APPLICANT HAS NOT TAKEN ANY TEST YET
           </div>
-          
-          <q-dialog  v-model="feedbackUpdateDialog">
-            <q-card class="updateDialog">
-              <q-card-section class="row">
-    <div class="q-pr-lg text-h6">
-      Feedback form
-    </div>
-    <q-space />
-    <q-btn v-close-popup dense flat rounded icon="close" />
-  </q-card-section>
-              <form>
-                <q-card-section class="q-pa-lg">
-                  <div class="row q-mb-sm">
-                    
-                    <p>CV Rating: </p>
-                    <q-rating
-                      v-model="feedbackToUpdate.cvRating"
-                      size="2em"
-            color="primary"
-            icon="fiber_manual_record"
-                    />
-                  </div>
-                  <div class="row q-mb-sm">
-                    <q-input
-                      type="textarea"
-                      v-model="feedbackToUpdate.cvFeedback"
-                      label="CV Feedback"
-                      name="cvFeedback"
-                      autofocus
-                      class="col"
-                      clearable
-                    />
-                  </div>
-                  <div class="row q-mb-sm">
-                    <p>Interview Rating: </p>
-                    <q-rating
-                      v-model="feedbackToUpdate.interviewRating"
-                      size="2em"
-            color="primary"
-            icon="fiber_manual_record"
-                    />
-                  </div>
-                  <div class="row q-mb-sm">
-                    <q-input     
-                      type="textarea"                 
-                      v-model="feedbackToUpdate.interviewFeedback"
-                      label="Interview Feedback"
-                      name="interviewFeedback"
-                      class="col"
-                      clearable
-                    />
-                  </div>
-                  <div class="row q-mb-sm">
-                    <q-input
-                      
-                      v-model="feedbackToUpdate.mention"
-                      label="Other mentiions"
-                      name="mention"
-                      class="col"
-                      clearable
-                    />
-                  </div>
-                </q-card-section>
-
-                <q-card-actions align="right">
-                  <q-btn
-                    @click="submitUpdateFeedback()"
-                    clickable
-                    label="Save"
-                    color="primary"
-                    type="submit"
-                  />
-                </q-card-actions>
-              </form>
-            </q-card>
-          </q-dialog>
         </q-card-section>
-      </q-card>
-      <q-card v-else class="my-card">
-        <q-card-section>
-          USER HAS NO FEEDBACK<br />
-          <q-btn
-            color="primary"
-            label="ADD FEEDBACK"
-            @click="feedbackDialog = true"
+        <q-card-section class="column items-center ">
+          <img
+            class="noDataImg"
+            src="../assets/undraw_programming_2svr.svg"
+            alt="User has not taken any tests"
           />
         </q-card-section>
-        <q-dialog v-model="feedbackDialog">
-          <q-card>
-            <form>
-              <q-card-section>
-                <div class="row q-mb-sm">
-                  <q-rating
-                    v-model="feedbackToSubmit.cvRating"
-                    size="1.5em"
-                    icon="thumb_up"
-                  />
-                </div>
-                <div class="row q-mb-sm">
-                  <q-input
-                    outlined
-                    v-model="feedbackToSubmit.cvFeedback"
-                    label="CV Feedback"
-                    name="cvFeedback"
-                    autofocus
-                    class="col"
-                    clearable
-                    :rules="[val => !!val || 'Field is required']"
-                  />
-                </div>
-                <div class="row q-mb-sm">
-                  <q-rating
-                    v-model="feedbackToSubmit.interviewRating"
-                    size="1.5em"
-                    icon="thumb_up"
-                  />
-                </div>
-                <div class="row q-mb-sm">
-                  <q-input
-                    outlined
-                    v-model="feedbackToSubmit.interviewFeedback"
-                    label="Interview Feedback"
-                    name="interviewFeedback"
-                    class="col"
-                    clearable
-                    :rules="[val => !!val || 'Field is required']"
-                  />
-                </div>
-              </q-card-section>
-
-              <q-card-actions align="right">
-                <q-btn
-                  @click="submitFeedback()"
-                  clickable
-                  type="submit"
-                  label="Save"
-                  color="primary"
-                />
-              </q-card-actions>
-            </form>
-          </q-card>
-        </q-dialog>
       </q-card>
     </div>
     <div v-else>
-      <q-card class="my-card">
-        <q-card-section>
-          SELECT A USER
+      <q-card class="q-ma-lg noSelection column items-center justify-center">
+        <q-card-section class="column items-center">
+          <div class="text-h4">
+            SELECT AN APPLICANT!
+          </div>
+        </q-card-section>
+        <q-card-section class="column items-center">
+          <img
+            class="noSelectionImg"
+            src="../assets/undraw_selection_92i4.svg"
+            alt="SELECT AN APPLICANT!"
+          />
         </q-card-section>
       </q-card>
     </div>
@@ -375,6 +446,18 @@
 </template>
 
 <style scoped>
+.noSelection {
+  border-radius: 25px;
+}
+
+.noSelectionImg {
+  width: 80%;
+}
+
+.noDataImg {
+  width: 50%;
+}
+
 .adminTable {
   width: 60%;
   border-radius: 25px;
@@ -390,9 +473,9 @@
   border-radius: 25px;
 }
 
-.updateDialog{
-  width:60%;
-  max-width:1500px;
+.feedbackDialog {
+  width: 60%;
+  max-width: 1500px;
   border-radius: 25px;
 }
 
@@ -469,7 +552,6 @@ export default {
         return moment(String(value)).format("MM/DD/YYYY hh:mm:ss");
       }
     }
-
   },
   watch: {
     selected: async function(sel) {
