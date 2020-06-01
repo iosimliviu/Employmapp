@@ -1,13 +1,10 @@
 <template>
   <q-page>
-    <p>ADMIN ADMIN ADMIN ADMIN ADMIN ADMIN</p>
-
-    <div class="q-ma-lg">
+    <div class="q-ma-lg column items-center">
       <q-table
-        ref="myTable"
         :class="tableClass"
         tabindex="0"
-        title="Treats"
+        title="Applicants"
         :data="getApplicants"
         :columns="columns"
         row-key="id"
@@ -15,7 +12,8 @@
         :selected.sync="selected"
         :pagination.sync="pagination"
         :filter="filter"
-        class="bg-grey-3"
+        class="adminTable bg-light1 column item-center"
+        style="width: 70%"
       >
         <template v-slot:top-right>
           <q-btn
@@ -41,105 +39,247 @@
         </template>
       </q-table>
     </div>
-    <div v-if="selected.length !== 0" class="q-mt-md">
+    <div v-if="selected.length !== 0" class="q-ma-md row justify-center">
       <q-card
         v-if="getUserTestsByUserId(selected[0].id).length != 0"
-        class="my-card"
+        class="resultCard"
       >
-        <q-card-section v-for="(pair, i) in pairs" :key="i">
-          Test id: {{ pair.resultData.testId }} <br />
-          Started at: {{ pair.resultData.startedAt }}<br />
-          Number of correct answers:
-          {{ pair.resultData.noCorrect - pair.resultData.noIncorrect }}/{{
-            pair.resultData.noCorrect
-          }}<br />
-          Number passed coding unit tests:
-          {{ pair.resultData.noPassedTests }}/{{ pair.resultData.noTotalTests
-          }}<br />
-          <b
-            >Final test score: {{ pair.resultData.result }}/{{
-              pair.testData.maxScore
-            }}</b
-          >
-          <b>{{ pair.testData.test.name }}</b>
+        <q-card-section v-for="(pair, i) in pairs" :key="i + 'r'" class="row">
+          <q-card-section class="result col">
+            <p><b>RESULT:</b></p>
+            <q-list
+              class="resultList rounded-borders shadow-box"
+              :class="`shadow-3`"
+            >
+              <q-item>
+                <q-item-section>Final test score:</q-item-section>
+                <q-item-section side class="stats">
+                  {{ pair.resultData.result }}/{{
+                    pair.testData.maxScore
+                  }}</q-item-section
+                >
+              </q-item>
 
-          <br />
+              <q-item>
+                <q-item-section>
+                  Correct answers:
+                </q-item-section>
+                <q-item-section side class="stats">
+                  {{
+                    pair.resultData.noCorrect - pair.resultData.noIncorrect
+                  }}/{{ pair.resultData.noCorrect }}
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>
+                  Passed unit tests:
+                </q-item-section>
+                <q-item-section side class="stats">
+                  {{ pair.resultData.noPassedTests }}/{{
+                    pair.resultData.noTotalTests
+                  }}
+                </q-item-section>
+              </q-item>
+              <q-item>
+                <q-item-section>Started at:</q-item-section>
+                <q-item-section side class="stats">{{
+                  pair.resultData.startedAt | formatDate
+                }}</q-item-section>
+              </q-item>
+              <q-item
+                ><q-item-section>Finished at:</q-item-section>
+                <q-item-section side class="stats">{{
+                  pair.resultData.finishedAt | formatDate
+                }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+          <q-card-section class="test col">
+            <p><b>TEST:</b></p>
+            <q-list class="rounded-borders" dense>
+              <q-item v-ripple>
+                <q-item-section>{{ pair.testData.test.name }}</q-item-section>
+              </q-item>
+              <q-item v-ripple>
+                <q-item-section
+                  ><p>
+                    {{ pair.testData.test.description }}
+                  </p></q-item-section
+                >
+              </q-item>
+              <q-item>
+                <q-item-section
+                  ><p>
+                    Max score: <b>{{ pair.testData.maxScore }}</b>
+                  </p></q-item-section
+                >
+              </q-item>
+              <q-item v-ripple>
+                <q-item-section
+                  ><p>
+                    Time: <b>{{ pair.testData.test.duration }}</b>
+                  </p></q-item-section
+                >
+              </q-item>
+              <q-item v-ripple>
+                <q-item-section>
+                  <p>
+                    Type: <b>{{ pair.testData.test.type }}</b>
+                  </p>
+                </q-item-section>
+              </q-item>
+              <q-item v-ripple>
+                <q-item-section>
+                  <p>
+                    <b>TID {{ pair.resultData.testId }}</b></b>
+                  </p>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
         </q-card-section>
       </q-card>
-      <q-card v-else class="my-card">
+      <q-card v-else class="resultCard">
         <q-card-section>
           User has not taken any tests
         </q-card-section>
       </q-card>
-      <q-card v-if="fetchFeedbackByUserId(selected[0].id)" class="my-card">
-        <q-card-section>
-          {{ selected[0].lastName }} {{ selected[0].firstName }}
-          <br />
+      <q-card v-if="fetchFeedbackByUserId(selected[0].id)" class="feedbackCard">
+        <q-card-section class="q-pa-lg">
+          <q-list>
+            
+          <p><b>Feedback for {{ selected[0].lastName }} {{ selected[0].firstName }}</b></p>
+          <q-item>
+            <q-item-section>
+              CV rating:
+              </q-item-section>
+            <q-item-section >
           <q-rating
             v-model="fetchFeedbackByUserId(selected[0].id).cvRating"
-            size="3em"
-            color="brown-5"
-            icon="pets"
-          /><br />
-          {{ fetchFeedbackByUserId(selected[0].id).cvFeedback }}<br />
+            size="2em"
+            color="primary"
+            icon="fiber_manual_record"
+            readonly
+          />
+          </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+          CV Feedback:
+          </q-item-section>
+          </q-item>
+          <q-item class="resultList rounded-borders shadow-box"
+              :class="`shadow-1`">
+            <q-item-section >
+          {{ fetchFeedbackByUserId(selected[0].id).cvFeedback }}
+          </q-item-section>
+          </q-item>
+          <q-item>
+            <q-item-section>
+              Interview rating:
+              </q-item-section>
+            <q-item-section >
           <q-rating
             v-model="fetchFeedbackByUserId(selected[0].id).interviewRating"
-            size="3em"
-            color="brown-5"
-            icon="pets"
-          /><br />
-          {{ fetchFeedbackByUserId(selected[0].id).interviewFeedback }}<br />
-          {{ fetchFeedbackByUserId(selected[0].id).mention }}<br />
+            size="2em"
+            color="primary"
+            icon="fiber_manual_record"
+            readonly
+          />
+          </q-item-section></q-item>
+          <q-item>
+            <q-item-section>
+          Interview Feedback:
+          </q-item-section>
+          </q-item>
+          <q-item class="resultList rounded-borders shadow-box"
+              :class="`shadow-1`">
+          {{ fetchFeedbackByUserId(selected[0].id).interviewFeedback }}
+          </q-item>
+          <q-item>
+            <q-item-section>
+          Other Mentions:
+          </q-item-section>
+          </q-item>
+          <q-item class="resultList rounded-borders shadow-box"
+              :class="`shadow-1`">
+          {{ fetchFeedbackByUserId(selected[0].id).mention }}</q-item>
+          </q-list>
+          <div class="row justify-center">
           <q-btn
+          class="q-ma-lg col-12 col-md-3"
             color="primary"
             label="UPDATE FEEDBACK"
             @click="prepareforUpdate"
           />
           <q-btn
-            color="primary"
+          class="q-ma-lg col-12 col-md-3"
+            color="grey-9"
             label="DELETE FEEDBACK"
             type="submit"
             @click="deleteFeedback(fetchFeedbackByUserId(selected[0].id).id)"
           />
-          <q-dialog v-model="feedbackUpdateDialog">
-            <q-card>
+          </div>
+          
+          <q-dialog  v-model="feedbackUpdateDialog">
+            <q-card class="updateDialog">
+              <q-card-section class="row">
+    <div class="q-pr-lg text-h6">
+      Feedback form
+    </div>
+    <q-space />
+    <q-btn v-close-popup dense flat rounded icon="close" />
+  </q-card-section>
               <form>
-                <q-card-section>
+                <q-card-section class="q-pa-lg">
                   <div class="row q-mb-sm">
+                    
+                    <p>CV Rating: </p>
                     <q-rating
                       v-model="feedbackToUpdate.cvRating"
-                      size="1.5em"
-                      icon="thumb_up"
+                      size="2em"
+            color="primary"
+            icon="fiber_manual_record"
                     />
                   </div>
                   <div class="row q-mb-sm">
                     <q-input
-                      outlined
+                      type="textarea"
                       v-model="feedbackToUpdate.cvFeedback"
                       label="CV Feedback"
                       name="cvFeedback"
                       autofocus
                       class="col"
                       clearable
-                      :rules="[val => !!val || 'Field is required']"
                     />
                   </div>
                   <div class="row q-mb-sm">
+                    <p>Interview Rating: </p>
                     <q-rating
                       v-model="feedbackToUpdate.interviewRating"
-                      size="1.5em"
-                      icon="thumb_up"
+                      size="2em"
+            color="primary"
+            icon="fiber_manual_record"
                     />
                   </div>
                   <div class="row q-mb-sm">
-                    <q-input
-                      outlined
+                    <q-input     
+                      type="textarea"                 
                       v-model="feedbackToUpdate.interviewFeedback"
                       label="Interview Feedback"
                       name="interviewFeedback"
                       class="col"
                       clearable
-                      :rules="[val => !!val || 'Field is required']"
+                    />
+                  </div>
+                  <div class="row q-mb-sm">
+                    <q-input
+                      
+                      v-model="feedbackToUpdate.mention"
+                      label="Other mentiions"
+                      name="mention"
+                      class="col"
+                      clearable
                     />
                   </div>
                 </q-card-section>
@@ -234,10 +374,47 @@
   </q-page>
 </template>
 
+<style scoped>
+.adminTable {
+  width: 60%;
+  border-radius: 25px;
+}
+
+.resultCard {
+  width: 50%;
+  border-radius: 25px;
+}
+
+.feedbackCard {
+  width: 50%;
+  border-radius: 25px;
+}
+
+.updateDialog{
+  width:60%;
+  max-width:1500px;
+  border-radius: 25px;
+}
+
+.stats {
+  color: #000;
+  font-weight: bold;
+}
+
+.resultList {
+  background-color: #f0f4ef;
+}
+</style>
+
 <script>
+import { colors } from "quasar";
+colors.setBrand("light1", "#F0F4EF");
+colors.setBrand("light2", "#ADB6C4");
+
 import { exportFile } from "quasar";
 import { mapGetters, mapActions } from "vuex";
 import { LocalStorage } from "quasar";
+import moment from "moment";
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -285,6 +462,14 @@ export default {
         { name: "phone", label: "Phone", field: "phone" }
       ]
     };
+  },
+  filters: {
+    formatDate: function(value) {
+      if (value) {
+        return moment(String(value)).format("MM/DD/YYYY hh:mm:ss");
+      }
+    }
+
   },
   watch: {
     selected: async function(sel) {

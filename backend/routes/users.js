@@ -7,7 +7,7 @@ router.get("/", userController.getAllUsers);
 router.post("/register", userController.createUser);
 router.delete("/:id", userController.deleteUser);
 router.put("/:id", userController.updateUser);
-router.post("/upload", userController.cvUpload);
+router.post("/upload/:lastName/:firstName", userController.cvUpload);
 router.get("/feedback/:user_id", userController.getFeedbackForUser);
 router.post("/registerObserver", userController.createObeserver);
 

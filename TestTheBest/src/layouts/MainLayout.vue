@@ -76,11 +76,6 @@ export default {
           to: "/"
         },
         {
-          label: "Profile",
-          icon: "perm_identity",
-          to: "/profile"
-        },
-        {
           label: "Test",
           icon: "description",
           to: "/test"

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header elevated class="bg-black">
+    <q-header elevated class="bg-accent">
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-toolbar-title>TestTheBest ADMIN</q-toolbar-title>
@@ -17,7 +17,7 @@
       :width="250"
       :breakpoint="600"
       bordered
-      content-class="bg-grey-3"
+      content-class="bg-light1"
     >
       <q-scroll-area class="fit">
         <q-list padding>
@@ -61,6 +61,10 @@
 </style>
 
 <script>
+import { colors } from "quasar";
+colors.setBrand("light1", "#F0F4EF");
+colors.setBrand("light2", "#ADB6C4");
+
 import { LocalStorage } from "quasar";
 export default {
   name: "Layout",
@@ -81,13 +85,13 @@ export default {
           to: "/adminTests"
         },
         {
-          label: "Observer",
+          label: "Observers",
           icon: "group",
           to: "/observers"
         },
         {
           label: "Logout",
-          icon: "group",
+          icon: "exit_to_app",
           to: "/login"
         }
       ]

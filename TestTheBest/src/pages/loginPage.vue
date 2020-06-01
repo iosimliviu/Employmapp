@@ -53,9 +53,9 @@
               <div class="q-pa-md">
                 <q-uploader
                   label="Auto Uploader"
-                  auto-upload
                   :factory="factoryFn"
-                  :field-name="file => 'background' + this.signup.firstName"
+                  :field-name="'CV_' + signup.firstName + '_' + signup.lastName"
+                  batch
                 ></q-uploader>
               </div>
               <q-btn @click="signUp" color="primary" label="Sign Up" />
@@ -78,8 +78,8 @@ export default {
         password: "",
         email: "",
         phone: "",
-        firstName: "",
-        lastName: ""
+        firstName: "fname",
+        lastName: "lname"
       },
       login: {
         password: "",
@@ -97,9 +97,9 @@ export default {
     }
   },
   methods: {
-    factoryFn(files) {
+    async factoryFn(files) {
       return {
-        url: "http://localhost:8080/api/users/upload",
+        url: `http://localhost:8080/api/users/upload/${this.signup.lastName}/${this.signup.firstName}`,
         method: "POST"
       };
     },

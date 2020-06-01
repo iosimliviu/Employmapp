@@ -5,22 +5,58 @@ const path = require('path')
 const fs = require('fs')
 const adminconfig = require("../config/adminconfig.json");
 
-const cvUpload = (req, res) => {
-  const folder = path.join(__dirname, 'files');
+// function cvUpload(req, res) {
+//   const folder = path.join(__dirname, '../files');
+//   if (!fs.existsSync(folder)) {
+//     fs.mkdirSync(folder)
+//   }
+
+//   const form = new formidable.IncomingForm()
+
+//   form.uploadDir = folder
+
+//   // form.on('file', function (field, file) {
+//   //   fs.rename(file.path, form.uploadDir + "/" + "Bobita_Cristian.pdf", function (error) { });
+//   // });
+
+//   form.on('error', function (err) {
+//     // console.log("an error has occured with form upload");
+//     // console.log(err);
+//     request.resume();
+//   });
+
+//   form.on('aborted', function (err) {
+//     //console.log("user aborted upload");
+//   });
+
+//   form.on('end', function () {
+//     //console.log('-> upload done');
+//   });
+//   form.parse(req, (_, fields, files) => {
+//     // console.log('\n-----------')
+//     // console.log('Fields', fields)
+//     // console.log('Received:', Object.keys(files))
+//     res.send('Thank you')
+//   })
+
+// }
+
+function cvUpload(req, res) {
+  const lastName = req.params.lastName;
+  const firstName = req.params.firstName;
+  const folder = path.join(__dirname, '../files');
   if (!fs.existsSync(folder)) {
     fs.mkdirSync(folder)
   }
-
   const form = new formidable.IncomingForm()
-
   form.uploadDir = folder
+  form.on('file', function (field, file) {
+    fs.rename(file.path, form.uploadDir + "/" + `CV_${lastName}_${firstName}.pdf`, function (error) { });
+  });
   form.parse(req, (_, fields, files) => {
-    console.log('\n-----------')
-    console.log('Fields', fields)
-    console.log('Received:', Object.keys(files))
-    console.log()
     res.send('Thank you')
   })
+
 }
 
 const getUser = async (req, res) => {
@@ -55,13 +91,11 @@ const getAllUsers = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    //const { firstName, lastName, email, password } = req.body;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
     const email = req.body.email;
     const phone = req.body.phone;
     const password = req.body.password;
-
     const errors = [];
     if (!firstName) {
       errors.push("First name is empty");
@@ -87,6 +121,20 @@ const createUser = async (req, res) => {
       errors.push("Phone is empty");
     }
     if (errors.length === 0) {
+      const folder = path.join(__dirname, '../files');
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder)
+      }
+      const form = new formidable.IncomingForm()
+      form.uploadDir = folder
+      form.on('file', function (field, file) {
+        fs.rename(file.path, form.uploadDir + "/" + `${firstName}_${lastName}.pdf`, function (error) { res.send('sugipula') });
+      });
+      form.parse(req, (_, fields, files) => {
+        res.send('Thank you')
+      })
+
+
       if (await email.localeCompare(adminconfig.email) == 0) {
         User.create({
           firstName,

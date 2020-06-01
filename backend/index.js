@@ -9,7 +9,6 @@ const throttle = require('express-throttle-bandwidth')
 const app = express();
 let port = 8081;
 
-
 const configure = app => {
     const corsOptions = {
         origin: true,

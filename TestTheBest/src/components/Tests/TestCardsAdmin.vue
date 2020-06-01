@@ -18,9 +18,6 @@
           {{ test.duration }}
           <q-card-actions align="around">
             <q-btn @click="onItemClick(test)" color="secondary" size="24px" flat
-              >Show tests details</q-btn
-            >
-            <q-btn @click="onItemClick(test)" color="secondary" size="24px" flat
               >delete test</q-btn
             >
           </q-card-actions>
