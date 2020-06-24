@@ -1,12 +1,23 @@
 <template>
   <q-page>
-    <p>OBSBSBSBSBSBSBSBS</p>
-    <q-input v-model="signup.firstName" type="text" label="First name" />
-    <q-input v-model="signup.lastName" type="text" label="Last name" />
-    <q-input v-model="signup.email" type="email" label="Email" />
-    <q-input v-model="signup.password" type="password" label="Password" />
-
-    <q-btn @click="signUpObserver" color="primary" label="Sign Up" />
+    <div class="cardSection q-pa-md">
+      <q-card class="formCard">
+        <q-card-section class="q-pa-lg">
+          <q-input v-model="signup.firstName" type="text" label="First name" />
+          <q-input v-model="signup.lastName" type="text" label="Last name" />
+          <q-input v-model="signup.email" type="email" label="Email" />
+          <q-input v-model="signup.password" type="password" label="Password" />
+        </q-card-section>
+        <q-card-actions class="col" align="center">
+          <q-btn
+            class="roundCorners q-pa-xs"
+            @click="signUpObserver"
+            color="primary"
+            label="REGISTER OBSERVER"
+          />
+        </q-card-actions>
+      </q-card>
+    </div>
 
     <ObserverCards :key="updComponent" />
   </q-page>
@@ -53,4 +64,28 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.cardSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.formCard {
+  width: 40%;
+  max-width: 1500px;
+  border-radius: 25px;
+}
+
+.roundCorners {
+  border-radius: 25px;
+}
+
+@media only screen and (max-width: 800px) {
+  .formCard {
+    width: 95%;
+    border-radius: 25px;
+  }
+}
+</style>

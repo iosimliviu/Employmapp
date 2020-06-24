@@ -1,14 +1,29 @@
 <template>
   <q-page>
-    <p>Cres Ca aici fac mare admin tests page in viitor</p>
-
-    <q-btn @click="goToCreate" label="add TEST" color="primary" />
-
+    <div class="q-ma-lg column items-center">
+      <q-btn
+        class="addTest"
+        @click="goToCreate"
+        label="add TEST"
+        color="primary"
+        size="xl"
+      />
+    </div>
     <TestCardsAdmin />
   </q-page>
 </template>
 
+<style scoped>
+.addTest {
+  border-radius: 25px;
+}
+</style>
+
 <script>
+import { colors } from "quasar";
+colors.setBrand("light1", "#F0F4EF");
+colors.setBrand("light2", "#ADB6C4");
+
 import { LocalStorage } from "quasar";
 import TestCardsAdmin from "../components/Tests/TestCardsAdmin.vue";
 
@@ -32,5 +47,3 @@ export default {
   }
 };
 </script>
-
-<style scoped></style>

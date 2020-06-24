@@ -8,8 +8,6 @@ const path = require('path');
 
 const CODE_FOLDER = "../code";
 
-//TO DO CONSOLE OUTPUT FOR USER
-//userTests.result += NoPassedTests * codeQuestions.scorePerTest
 async function testCode(req, res) {
     try {
         let sessionId = req.body.id;
@@ -24,10 +22,8 @@ async function testCode(req, res) {
 
         let test = importInputCode + codeQuestion.test;
 
-
         fs.writeFileSync(path.join(__dirname, CODE_FOLDER, `input_code${sessionId}.py`), answer);
         fs.writeFileSync(path.join(__dirname, CODE_FOLDER, `test${req.body.codeQuestionId}.py`), test);
-        //const proc = exec(`pwd`);//path.join(CODE_FOLDER, "test.py"));//
         const proc = exec(`python ../backend/code/test${req.body.codeQuestionId}.py`);//path.join(CODE_FOLDER, "test.py"));//
         const results = await proc.toString();
 
@@ -42,9 +38,9 @@ async function testCode(req, res) {
             noTotalTests
         });
     } catch (error) {
-        console.log("An error occurred");
+        console.log("Syntax error");
         console.log(error);
-        return res.send("An error occurred.");
+        return res.send("Syntax error");
     }
 }
 

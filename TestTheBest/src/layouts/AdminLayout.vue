@@ -3,7 +3,12 @@
     <q-header elevated class="bg-accent">
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-toolbar-title>TestTheBest ADMIN</q-toolbar-title>
+        <img
+          @click="drawer = !drawer"
+          class="q-ma-sm"
+          style="height:50px"
+          src="../assets/Employmapp-01.png"
+        />
       </q-toolbar>
     </q-header>
 

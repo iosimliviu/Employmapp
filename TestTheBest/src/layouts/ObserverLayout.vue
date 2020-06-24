@@ -1,9 +1,14 @@
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header elevated class="bg-primary">
+    <q-header elevated class="bg-accent">
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-toolbar-title>TestTheBest OBSERVER</q-toolbar-title>
+        <img
+          @click="drawer = !drawer"
+          class="q-ma-sm"
+          style="height:50px"
+          src="../assets/Employmapp-01.png"
+        />
       </q-toolbar>
     </q-header>
 
@@ -17,7 +22,7 @@
       :width="250"
       :breakpoint="600"
       bordered
-      content-class="bg-grey-3"
+      content-class="bg-light1"
     >
       <q-scroll-area class="fit">
         <q-list padding>
@@ -82,7 +87,7 @@ export default {
         },
         {
           label: "Logout",
-          icon: "group",
+          icon: "exit_to_app",
           to: "/login"
         }
       ]

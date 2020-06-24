@@ -1,7 +1,5 @@
 <template>
   <q-page>
-    <p>Cres Ca aici fac mare Homepage in viitor</p>
-
     <TestCards />
   </q-page>
 </template>

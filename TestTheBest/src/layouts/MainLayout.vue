@@ -1,9 +1,14 @@
 <template>
   <q-layout view="hHh LpR fFf">
-    <q-header elevated class="bg-black">
+    <q-header elevated class="bg-accent">
       <q-toolbar>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-toolbar-title>TestTheBest</q-toolbar-title>
+        <img
+          @click="drawer = !drawer"
+          class="q-ma-sm"
+          style="height:50px"
+          src="../assets/Employmapp-01.png"
+        />
       </q-toolbar>
     </q-header>
 
@@ -17,7 +22,7 @@
       :width="250"
       :breakpoint="600"
       bordered
-      content-class="bg-grey-3"
+      content-class="bg-light1"
     >
       <q-scroll-area class="fit">
         <q-list padding>
@@ -52,7 +57,7 @@
   </q-layout>
 </template>
 
-<style>
+<style scoped>
 @media (min-width: 768px) {
   .q-footer {
     display: none;
@@ -61,6 +66,10 @@
 </style>
 
 <script>
+import { colors } from "quasar";
+colors.setBrand("light1", "#F0F4EF");
+colors.setBrand("light2", "#ADB6C4");
+
 import { LocalStorage } from "quasar";
 export default {
   name: "Layout",
@@ -73,22 +82,22 @@ export default {
         {
           label: "Home",
           icon: "home",
-          to: "/"
+          to: "/landing"
         },
         {
           label: "Test",
-          icon: "description",
-          to: "/test"
+          icon: "code",
+          to: "/"
         },
         {
-          label: "Settings",
-          icon: "settings",
-          to: "/settings"
+          label: "Details",
+          icon: "description",
+          to: "/details"
         },
 
         {
           label: "Logout",
-          icon: "group",
+          icon: "exit_to_app",
           to: "/login"
         }
       ]

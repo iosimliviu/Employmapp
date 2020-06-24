@@ -13,7 +13,6 @@
         :pagination.sync="pagination"
         :filter="filter"
         class="adminTable bg-light1 column item-center"
-        style="width: 70%"
       >
         <template v-slot:top-right>
           <q-btn
@@ -22,7 +21,7 @@
             label="Export to csv"
             no-caps
             @click="exportTable"
-            class="q-mr-lg"
+            class="q-mr-lg roundCorners"
           />
 
           <q-input
@@ -116,13 +115,13 @@
           </q-list>
           <div class="row justify-center">
             <q-btn
-              class="q-ma-lg col-12 col-md-3"
+              class="q-ma-lg col-12 col-md-3 roundCorners"
               color="primary"
               label="UPDATE FEEDBACK"
               @click="prepareforUpdate"
             />
             <q-btn
-              class="q-ma-lg col-12 col-md-3"
+              class="q-ma-lg col-12 col-md-3 roundCorners"
               color="grey-9"
               label="DELETE FEEDBACK"
               type="submit"
@@ -193,7 +192,7 @@
                 </q-card-section>
                 <div class="q-pa-lg row justify-center">
                   <q-btn
-                    class="q-ma-lg col-12 col-md-3"
+                    class="q-ma-lg col-12 col-md-3 roundCorners"
                     color="primary"
                     label="Save"
                     @click="submitUpdateFeedback()"
@@ -201,7 +200,7 @@
                   />
                   <q-btn
                     v-close-popup
-                    class="q-ma-lg col-12 col-md-3"
+                    class="q-ma-lg col-12 col-md-3 roundCorners"
                     color="grey-9"
                     label="Cancel"
                   />
@@ -211,7 +210,7 @@
           </q-dialog>
         </q-card-section>
       </q-card>
-      <q-card v-else class="col noSelection column items-center">
+      <q-card v-else class="feedbackCard column items-center">
         <q-card-section class="column items-center">
           <div class="text-h6">
             APPLICANT HAS NO FEEDBACK
@@ -219,6 +218,7 @@
         </q-card-section>
         <q-card-section class="column items-center">
           <q-btn
+            class="roundCorners"
             color="primary"
             label="ADD FEEDBACK"
             @click="feedbackDialog = true"
@@ -294,7 +294,7 @@
               </q-card-section>
               <div class="q-pa-lg row justify-center">
                 <q-btn
-                  class="q-ma-lg col-12 col-md-3"
+                  class="q-ma-lg col-12 col-md-3 roundCorners"
                   @click="submitFeedback()"
                   clickable
                   type="submit"
@@ -303,7 +303,7 @@
                 />
                 <q-btn
                   v-close-popup
-                  class="q-ma-lg col-12 col-md-3"
+                  class="q-ma-lg col-12 col-md-3 roundCorners"
                   color="grey-9"
                   label="Cancel"
                 />
@@ -389,7 +389,8 @@
               <q-item v-ripple>
                 <q-item-section
                   ><p>
-                    Time: <b>{{ pair.testData.test.duration }}</b>
+                    Time:
+                    <b>{{ formattedTotalTime(pair.testData.test.duration) }}</b>
                   </p></q-item-section
                 >
               </q-item>
@@ -446,6 +447,10 @@
 </template>
 
 <style scoped>
+.roundCorners {
+  border-radius: 25px;
+}
+
 .noSelection {
   border-radius: 25px;
 }
@@ -486,6 +491,15 @@
 
 .resultList {
   background-color: #f0f4ef;
+}
+
+@media only screen and (max-width: 700px) {
+  .adminTable {
+    width: 100%;
+  }
+  .feedbackDialog {
+    width: 100%;
+  }
 }
 </style>
 
@@ -611,6 +625,17 @@ export default {
     submitUpdateFeedback() {
       this.updateFeedback(this.feedbackToUpdate);
       this.feedbackUpdateDialog = false;
+    },
+    formattedTotalTime(duration) {
+      const totalTime = duration;
+      const minutes = Math.floor(totalTime / 60);
+      let seconds = totalTime % 60;
+
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+
+      return `${minutes}:${seconds}`;
     },
     exportTable() {
       // naive encoding to csv format

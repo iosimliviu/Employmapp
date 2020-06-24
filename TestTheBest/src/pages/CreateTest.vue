@@ -1,90 +1,223 @@
 <template>
-  <div class="q-pa-md" style="max-width: 70%">
-    <q-list>
-      <q-input v-model.number="testInstance.duration" type="number" />
-      <q-input v-model="testInstance.name" label="Outlined" />
-      <q-input v-model="testInstance.description" label="Outlined" />
-      <q-input v-model="testInstance.type" label="Outlined" />
-      <q-expansion-item
-        v-for="(question, i) in testInstance.questions"
-        :key="i + 'q'"
-        expand-separator
-        :label="question.questionText"
-      >
-        <q-card>
-          <q-card-section>
-            <q-input v-model.number="question.score" type="number" />
-            <div v-for="(answer, j) in question.answers" :key="j">
-              <q-checkbox v-model="answer.isCorrect" />
-              <q-input outlined v-model="answer.answerText" label="Outlined" />
-              <q-btn @click="removeAnswer(i, j)" label="-" color="red" round />
-            </div>
-          </q-card-section>
-        </q-card>
-        <q-btn @click="addAnswer(i)" label="add Answer" color="primary" />
-        <q-btn @click="removeQuestion(i)" label="remove Question" color="red" />
-      </q-expansion-item>
-      <q-expansion-item
-        v-for="(codeQuestion, i) in testInstance.codeQuestions"
-        :key="i + 'cq'"
-        expand-separator
-        :label="codeQuestion.questionText"
-      >
-        <q-card>
-          <q-card-section>
-            <q-input
-              outlined
-              v-model.number="codeQuestion.scorePerTest"
-              type="number"
-            />
-
-            <q-input
-              outlined
-              v-model.number="codeQuestion.noTests"
-              type="number"
-            />
-
-            <q-input
-              outlined
-              v-model="codeQuestion.questionText"
-              label="Outlined"
-            />
-            <q-input outlined v-model="codeQuestion.input" label="Outlined" />
-            <q-input outlined v-model="codeQuestion.test" label="Outlined" />
-          </q-card-section>
-        </q-card>
-        <q-btn
-          @click="removeCodeQuestion(i)"
-          label="remove code Question"
-          color="red"
+  <div class="cardSection q-pa-md">
+    <q-card class="formCard">
+      <q-card-section class="q-pa-lg">
+        <div class="row">
+          <q-input v-model="testInstance.name" class="col-11" label="Name" />
+          <q-input
+            v-model.number="testInstance.duration"
+            type="number"
+            class="col"
+            label="Duration(s)"
+          />
+        </div>
+        <q-input
+          v-model="testInstance.description"
+          type="textarea"
+          label="Description"
         />
-      </q-expansion-item>
-      <q-btn
-        @click="addCodeQuestion"
-        label="add Code Question"
-        color="primary"
-      />
-      <q-btn @click="addQuestion" label="add Question" color="primary" />
-      <q-btn @click="resetTest" label="reset" color="primary" />
-      <q-btn
-        :to="`/adminTests`"
-        @click.native="
-          createTest();
-          $router.go();
-        "
-        type="submit"
-        label="create"
-        color="primary"
-      />
-    </q-list>
+        <q-input v-model="testInstance.type" label="Outlined" />
+        <q-expansion-item
+          v-for="(question, i) in testInstance.questions"
+          :key="i + 'q'"
+          expand-separator
+          :label="question.questionText"
+        >
+          <q-card class="bg-light1">
+            <q-card-section>
+              <div class="q-mb-lg row">
+                <q-input
+                  v-model.number="question.questionText"
+                  class="col-11"
+                  label="Question"
+                />
+                <q-input
+                  v-model.number="question.score"
+                  class="col"
+                  type="number"
+                  label="Score"
+                />
+              </div>
+              <div v-for="(answer, j) in question.answers" :key="j + 'a'">
+                <q-checkbox
+                  v-model="answer.isCorrect"
+                  label="Right Answer"
+                  style="color:#808080"
+                />
+                <div class="q-mb-lg row">
+                  <q-input
+                    class="col-11"
+                    v-model="answer.answerText"
+                    label="Answer"
+                  />
+                  <div class="col">
+                    <q-btn
+                      @click="removeAnswer(i, j)"
+                      label="-"
+                      color="red"
+                      round
+                    />
+                  </div>
+                </div>
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <q-btn
+                class="q-mr-lg roundCorners"
+                @click="addAnswer(i)"
+                label="add Answer"
+                color="primary"
+              />
+              <q-btn
+                @click="removeQuestion(i)"
+                label="remove Question"
+                color="red"
+                class="roundCorners"
+                flat
+              />
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+
+        <q-expansion-item
+          v-for="(codeQuestion, i) in testInstance.codeQuestions"
+          :key="i + 'cq'"
+          expand-separator
+          :label="codeQuestion.questionText"
+          @click="editorRefresh++ + 'e'"
+        >
+          <q-card class="bg-light1">
+            <q-card-section>
+              <q-input
+                v-model.number="codeQuestion.questionText"
+                label="Question"
+              />
+              <div class="row">
+                <q-input
+                  class="col"
+                  v-model.number="codeQuestion.scorePerTest"
+                  type="number"
+                  label="Score per test"
+                />
+
+                <q-input
+                  class="col"
+                  v-model.number="codeQuestion.noTests"
+                  type="number"
+                  label="Total number of unit tests"
+                />
+              </div>
+              <!-- <q-input v-model="codeQuestion.input" label="Outlined" />
+              <q-input v-model="codeQuestion.test" label="Outlined" /> -->
+              <p class="q-mt-lg" color="grey-8">Enter test case:</p>
+              <MonacoEditor
+                :key="editorRefresh"
+                v-model="codeQuestion.test"
+                theme="vs-dark"
+                language="python"
+                :options="options"
+                height="300"
+              ></MonacoEditor>
+              <p class="q-mt-lg" color="grey-8">Enter user start input:</p>
+              <MonacoEditor
+                :key="editorRefresh"
+                v-model="codeQuestion.input"
+                theme="vs-dark"
+                language="python"
+                :options="options"
+                height="150"
+              ></MonacoEditor>
+            </q-card-section>
+            <q-card-section>
+              <q-btn
+                @click="removeCodeQuestion(i)"
+                label="remove code Question"
+                class="roundCorners"
+                color="red"
+                flat
+              />
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+      </q-card-section>
+      <div class="row q-pa-lg">
+        <q-card-actions class="col" align="center">
+          <q-btn
+            @click="addQuestion"
+            class="q-mr-lg roundCorners"
+            label="add Question"
+            color="secondary"
+          />
+          <q-btn
+            @click="addCodeQuestion"
+            label="add Code Question"
+            class="roundCorners"
+            color="accent"
+          />
+        </q-card-actions>
+        <q-card-actions class="col" align="center">
+          <q-btn
+            @click="resetTest"
+            class="q-mr-lg roundCorners"
+            flat
+            label="reset"
+            color="accent"
+          />
+          <q-btn
+            to="`/adminTests`"
+            @click.native="
+              createTest();
+              $router.go();
+            "
+            class="q-pa-xs roundCorners"
+            type="submit"
+            label="create test"
+            color="primary"
+            size="lg"
+          />
+        </q-card-actions>
+      </div>
+    </q-card>
   </div>
 </template>
 
+<style>
+.roundCorners {
+  border-radius: 25px;
+}
+
+.cardSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.formCard {
+  width: 75%;
+  max-width: 1500px;
+  border-radius: 25px;
+}
+</style>
+
 <script>
+import { colors } from "quasar";
+colors.setBrand("light1", "#F0F4EF");
+colors.setBrand("light2", "#ADB6C4");
+
 import { LocalStorage } from "quasar";
+import MonacoEditor from "monaco-editor-vue";
+
 export default {
+  components: {
+    MonacoEditor
+  },
   data() {
     return {
+      editorRefresh: 0,
+      options: {
+        //Monaco Editor Options
+      },
       testInstance: {
         duration: 20,
         name: "DEFAULT NAME",
@@ -93,10 +226,10 @@ export default {
         codeQuestions: [
           {
             questionText: "1DEFAULT CODE QUESTION",
-            input: "Default signature",
+            input: "'''function(s) signature(s)'''",
             scorePerTest: 1,
             noTests: 2,
-            test: "\n1copy and paste you python test in here\n"
+            test: "'''copy and paste your python test in here'''"
           }
         ],
         questions: [
@@ -119,6 +252,9 @@ export default {
     };
   },
   methods: {
+    onChange(value) {
+      console.log(value);
+    },
     createTest() {
       this.$axios
         .post("/api/tests/", {
@@ -212,5 +348,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

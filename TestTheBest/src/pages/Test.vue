@@ -1,40 +1,69 @@
 <template>
   <div class="container row">
-    <q-btn
-      color="secondary"
-      size="24px"
-      :label="formattedTimeLeft + '/' + formattedTotalTime"
-    />
-    <q-card v-if="isAttemptStarted === false">
-      <q-card-section>
+    <q-card
+      v-if="isAttemptStarted === false"
+      class="previewCard q-pa-lg q-ma-lg"
+    >
+      <q-card-section class="testInfoCardSection">
+        <p class="text-h4">{{ info.test.name }}</p>
+        <p class="text-h6">{{ info.test.description }}</p>
+        <p class="text-h6">Type: {{ info.test.type }}</p>
+      </q-card-section>
+      <q-card-section class="confirmStartCardSection">
+        <div class="timer q-mb-lg">
+          <q-chip
+            color="accent"
+            text-color="white"
+            size="24px"
+            :label="formattedTimeLeft + '/' + formattedTotalTime"
+          />
+        </div>
         <div class="text-h6">ARE YOU SURE YOU WANT TO START?</div>
-        <q-btn @click="startAttempt" color="primary" size="24px">YES</q-btn>
+        <q-btn
+          @click="startAttempt"
+          class="roundBorders q-ma-lg"
+          color="primary"
+          size="24px"
+          >YES</q-btn
+        >
         <q-btn
           :to="`/`"
           @click.native="$router.go()"
-          color="primary"
-          size="24px"
+          color="secondary"
+          class="roundBorders"
+          size="lg"
           >NO, TAKE ME BACK</q-btn
         >
       </q-card-section>
     </q-card>
     <div v-else>
-      <q-card v-if="done">
-        <q-card-section>
+      <q-card v-if="done" class="previewCard q-pa-lg q-ma-lg">
+        <q-card-section class="finish">
           <div class="text-h6">
-            TEST FINISHED
+            <p>TEST FINISHED</p>
+
             <q-btn
               :to="`/`"
               @click.native="$router.go()"
               color="primary"
               size="24px"
+              class="roundBorders"
               >go home</q-btn
             >
           </div>
         </q-card-section>
       </q-card>
       <div v-else class="allQuestions">
+        <div class="timer q-mb-lg">
+          <q-chip
+            color="accent"
+            text-color="white"
+            size="24px"
+            :label="formattedTimeLeft + '/' + formattedTotalTime"
+          />
+        </div>
         <q-stepper
+          class="roundBorders"
           v-if="info.questions || info.codeQuestions"
           v-model="step"
           ref="stepper"
@@ -49,7 +78,7 @@
             :done="step > i"
           >
             <div v-if="question.answers" class="q-ma-lg">
-              <q-card>
+              <q-card class="roundBorders question">
                 <q-card-section>
                   <div class="text-h6">{{ question.questionText }}</div>
                 </q-card-section>
@@ -75,15 +104,22 @@
               </q-list>
             </div>
             <div v-else>
-              <q-card class="question">
+              <q-card class="codeQuestion">
                 <q-card-section>
-                  <div class="text-h6">{{ question.questionText }}</div>
-                  <q-btn
-                    @click="testCode(question.id)"
-                    color="primary"
-                    size="24px"
-                    >Run</q-btn
-                  >
+                  <div class="row text-h6">
+                    <p class="q-mr-lg">
+                      {{ question.questionText }}
+                    </p>
+                    <q-space />
+                    <q-btn
+                      @click="testCode(question.id)"
+                      color="green-6"
+                      size="24px"
+                      icon="play_arrow"
+                      class="roundBorders"
+                      >Run</q-btn
+                    >
+                  </div>
                 </q-card-section>
               </q-card>
 
@@ -95,12 +131,16 @@
                 @change="onChange"
                 class="editor"
                 height="500px"
-                >asddddddddddd</MonacoEditor
-              >
+              ></MonacoEditor>
 
               <q-card class="output">
                 <q-card-section>
-                  <div class="text-h6">{{ codeGuidanceData }}</div>
+                  <div class="text-h6" v-if="codeGuidanceData.results">
+                    <p>{{ codeGuidanceData.results }}</p>
+                  </div>
+                  <div class="text-h6" v-else>
+                    {{ codeGuidanceData }}
+                  </div>
                 </q-card-section>
               </q-card>
             </div>
@@ -115,6 +155,7 @@
                 type="submit"
                 color="primary"
                 label="Finish"
+                class="roundBorders"
               />
               <q-btn
                 v-else
@@ -123,20 +164,69 @@
                   onNext();
                 "
                 color="primary"
+                class="roundBorders"
                 label="Continue"
               />
             </q-stepper-navigation>
           </template>
         </q-stepper>
 
-        <div class="q-px-sm">
+        <!-- <div class="q-px-sm">
           Your selection is: <strong>{{ stepAnswer }}</strong>
           {{ new Date().toISOString() }}5/24/2020, 5:54:34 PM lala
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.previewCard {
+  border-radius: 25px;
+}
+
+.roundBorders {
+  border-radius: 25px;
+}
+
+.testInfoCardSection {
+  border-radius: 25px;
+  background-color: #f0f4ef;
+}
+
+.confirmStartCardSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+/* .allQuestions {
+  width: 65%;
+} */
+.editor {
+  width: 100%;
+}
+.question {
+  border-radius: 25px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.codeQuestion {
+  border-radius: 25px 25px 0 0;
+  width: 100%;
+  max-width: 1000px;
+}
+.output {
+  width: 100%;
+  border-radius: 0 0 25px 25px;
+}
+</style>
 
 <script>
 import { LocalStorage } from "quasar";
@@ -384,22 +474,3 @@ export default {
   // }
 };
 </script>
-
-<style scoped>
-.container {
-  display: flex;
-  justify-content: center;
-}
-.allQuestions {
-  width: 65%;
-}
-.editor {
-  width: 100%;
-}
-.question {
-  width: 100%;
-}
-.output {
-  width: 100%;
-}
-</style>

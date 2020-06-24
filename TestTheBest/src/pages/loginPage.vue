@@ -1,20 +1,18 @@
 <template>
-  <q-page class="app flex flex-center">
-    <div class="container row">
+  <q-page class="bg-image flex flex-center">
+    <div class="container row bg-light1">
       <div class="description-area col">
-        <h3 class="text-rubik">Test the best</h3>
+        <h3 class="text-rubik q-ma-lg">Navigate your career.</h3>
       </div>
       <div class="login-area col">
-        <q-card class="login-card">
-          <q-card-section class="card-section">
-            <div class="img-center">
-              <img
-                style="width:100px; height: 100px; background "
-                src="../assets/code.png"
-              />
-            </div>
-          </q-card-section>
-
+        <q-card class="login-card bg-accent">
+          <div class="column items-center">
+            <img
+              class="logo col"
+              alt="Employmapp"
+              src="../assets/Employmapp-01.png"
+            />
+          </div>
           <q-tabs v-model="tab">
             <q-tab label="Login" style="color: white;" name="one" />
             <q-tab label="Register" style="color: white;" name="two" />
@@ -29,7 +27,13 @@
                 label="Password"
               />
 
-              <q-btn @click="onLogin" color="primary" label="Log In" />
+              <q-btn
+                @click="onLogin"
+                class="roundCorners"
+                color="primary q-mt-sm"
+                label="Log In"
+                size="lg"
+              />
             </q-tab-panel>
 
             <q-tab-panel name="two">
@@ -50,15 +54,22 @@
                 type="password"
                 label="Password"
               />
-              <div class="q-pa-md">
+              <div class="q-pa-md ">
                 <q-uploader
-                  label="Auto Uploader"
+                  class="uploader"
+                  label="Upload Resume"
                   :factory="factoryFn"
                   :field-name="'CV_' + signup.firstName + '_' + signup.lastName"
                   batch
                 ></q-uploader>
               </div>
-              <q-btn @click="signUp" color="primary" label="Sign Up" />
+              <q-btn
+                class="roundCorners"
+                @click="signUp"
+                color="primary"
+                label="Sign Up"
+                size="lg"
+              />
             </q-tab-panel>
           </q-tab-panels>
         </q-card>
@@ -68,6 +79,10 @@
 </template>
 
 <script>
+import { colors } from "quasar";
+colors.setBrand("light1", "#F0F4EF");
+colors.setBrand("light2", "#ADB6C4");
+
 import { LocalStorage } from "quasar";
 export default {
   name: "LoginPage",
@@ -92,7 +107,7 @@ export default {
       if (LocalStorage.getItem("isAdmin")) {
         this.$router.push("/admin");
       } else {
-        this.$router.push({ name: "HomePage" });
+        this.$router.push("/landing");
       }
     }
   },
@@ -143,7 +158,7 @@ export default {
           } else if (response.data.details.isObserver) {
             this.$router.push("/observer");
           } else {
-            this.$router.push({ name: "HomePage" });
+            this.$router.push("/landing");
           }
         })
         .catch(error => {
@@ -156,14 +171,36 @@ export default {
     }
   }
 };
+
+//background-image: url(../assets/waveUp.svg);
 </script>
 
 <style scoped>
-.app {
-  background-image: url(../assets/topography.svg);
+.roundCorners {
+  border-radius: 25px;
 }
+
+.loginPageButtons {
+  margin: auto;
+}
+
+.uploader {
+  margin: auto;
+  width: 70%;
+}
+
+.logo {
+  width: 80%;
+  align-items: center;
+}
+
+.bg-image {
+  background-image: url(../assets/topography.svg);
+  background-size: contain;
+  background-color: #f0f4ef;
+}
+
 .container {
-  background-color: lightgrey;
   border-radius: 25px;
   width: 80%;
   height: 100%;
@@ -211,6 +248,10 @@ export default {
   margin-bottom: 10px;
 }
 @media only screen and (max-width: 700px) {
+  .uploader {
+    width: 100%;
+  }
+
   .description-area {
     display: none;
   }

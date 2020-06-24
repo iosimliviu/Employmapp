@@ -4,54 +4,81 @@
       v-for="test in getTestsMetadata"
       :key="test.id"
       :test="test"
-      class="card q-ma-lg"
-      flat
-      bordered
+      class="card q-ma-lg bg-light1"
     >
       <q-card-section horizontal>
-        <q-img class="col-5" :src="test.image" />
-        <q-card-section>
-          {{ test.name }}
-          <q-separator dark inset />
-          {{ test.description }}
-          <q-separator dark inset />
-          {{ test.duration }}
-          <q-card-actions align="around">
-            <q-btn
-              v-if="!isDone(test.id)"
-              @click="goTest(test.id)"
-              type="submit"
-              color="secondary"
-              size="24px"
-              flat
-              >Take Test</q-btn
-            >
-            <q-btn
-              v-else
-              @click="onItemClick(test)"
-              type="submit"
-              color="secondary"
-              size="24px"
-              flat
-              >Take Test</q-btn
-            >
-          </q-card-actions>
-        </q-card-section>
+        <q-img
+          class="wave col-5"
+          alt="wave"
+          :src="require(`../../assets/waveSvgs/wave${getRandomInt(10)}.svg`)"
+        />
+        <div class="col column item-start">
+          <div class="q-mb-sm col-3 row text-h5">
+            <q-card-section class="testName">
+              {{ test.name }}
+            </q-card-section>
+            <q-space />
+            <q-card-section>
+              <q-chip color="primary" icon="schedule" text-color="white">{{
+                formattedTotalTime(test.duration)
+              }}</q-chip>
+            </q-card-section>
+          </div>
+          <q-card-section class="col">
+            {{ test.description }}
+          </q-card-section>
+
+          <q-btn
+            v-if="!isDone(test.id)"
+            @click="goTest(test.id)"
+            class="col-4  deleteSection"
+            type="submit"
+            color="primary"
+            size="24px"
+            flat
+            >Take Test</q-btn
+          >
+          <q-btn
+            v-else
+            @click="onItemClick(test)"
+            class="col-4  deleteSection"
+            type="submit"
+            color="primary"
+            size="24px"
+            flat
+            >Take Test</q-btn
+          >
+        </div>
       </q-card-section>
     </q-card>
 
     <q-dialog v-model="doneDialog">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Test already takken</div>
+      <q-card style="border-radius:25px">
+        <q-card-section class="row">
+          <div class="q-pr-lg text-h6">
+            Test already taken
+          </div>
+          <q-space />
+          <q-btn v-close-popup dense flat rounded icon="close" />
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          {{ resultsInfo }}
-          <br />
-          You better lose yourself in the music, the moment<br />You own it, you
-          better never let it go<br />You only get one shot, do not miss your
-          chance to blow<br />This opportunity comes once in a lifetime
+          <q-card-section class="testInfoCardSection">
+            <p class="text-h6">
+              Finished at: {{ resultsInfo.finishedAt | formatDate }}
+            </p>
+            <p class="text-h6">
+              Theoretical questions:
+              {{ resultsInfo.noCorrect - resultsInfo.noIncorrect }}/{{
+                resultsInfo.noCorrect
+              }}
+            </p>
+            <p class="text-h6">
+              Code questions: {{ resultsInfo.noPassedTests }}/{{
+                resultsInfo.noTotalTests
+              }}
+            </p>
+          </q-card-section>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -62,9 +89,46 @@
   </div>
 </template>
 
+<style>
+.testName {
+  max-width: 50%;
+}
+.testInfoCardSection {
+  border-radius: 25px 25px 25px 25px;
+  background-color: #f0f4ef;
+}
+.card {
+  width: 35%;
+  height: 100%;
+  border-radius: 25px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1150px) {
+  .card {
+    width: 80%;
+    border-radius: 25px;
+  }
+
+  .wave {
+    display: none;
+  }
+
+  .container {
+    height: 50%;
+  }
+}
+</style>
+
 <script>
 import { LocalStorage } from "quasar";
 import { mapGetters, mapActions } from "vuex";
+import moment from "moment";
 
 export default {
   name: "TestCards",
@@ -73,6 +137,13 @@ export default {
       doneDialog: false,
       resultsInfo: {}
     };
+  },
+  filters: {
+    formatDate: function(value) {
+      if (value) {
+        return moment(String(value)).format("MM/DD/YYYY hh:mm:ss");
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -83,6 +154,20 @@ export default {
     ])
   },
   methods: {
+    getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    },
+    formattedTotalTime(duration) {
+      const totalTime = duration;
+      const minutes = Math.floor(totalTime / 60);
+      let seconds = totalTime % 60;
+
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+
+      return `${minutes}:${seconds}`;
+    },
     onItemClick(test) {
       this.doneDialog = true;
       let userTests = this.getUserTestsByUserId(LocalStorage.getItem("userId"));
@@ -112,16 +197,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.card {
-  width: 35%;
-  height: 100%;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-</style>
