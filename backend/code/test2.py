@@ -1,4 +1,4 @@
-from input_code2 import solution
+from input_code7 import solution
 
 def get_test_cases():
     return {

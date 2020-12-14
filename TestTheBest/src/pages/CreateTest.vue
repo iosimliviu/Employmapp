@@ -16,7 +16,7 @@
           type="textarea"
           label="Description"
         />
-        <q-input v-model="testInstance.type" label="Outlined" />
+        <q-input v-model="testInstance.type" label="Type" />
         <q-expansion-item
           v-for="(question, i) in testInstance.questions"
           :key="i + 'q'"
@@ -292,11 +292,11 @@ export default {
     },
     addCodeQuestion() {
       this.testInstance.codeQuestions.push({
-        questionText: "a",
-        scorePerTest: 2,
-        noTests: 2,
-        input: "func def",
-        test: "\na\n"
+        questionText: "added Code question",
+        scorePerTest: 0,
+        noTests: 0,
+        input: "'''function(s) signature(s)'''",
+        test: "'''copy and paste your python test in here'''"
       });
       console.log(this.testInstance);
     },

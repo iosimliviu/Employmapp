@@ -89,42 +89,6 @@
   </div>
 </template>
 
-<style>
-.testName {
-  max-width: 50%;
-}
-.testInfoCardSection {
-  border-radius: 25px 25px 25px 25px;
-  background-color: #f0f4ef;
-}
-.card {
-  width: 35%;
-  height: 100%;
-  border-radius: 25px;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-@media only screen and (max-width: 1150px) {
-  .card {
-    width: 80%;
-    border-radius: 25px;
-  }
-
-  .wave {
-    display: none;
-  }
-
-  .container {
-    height: 50%;
-  }
-}
-</style>
-
 <script>
 import { LocalStorage } from "quasar";
 import { mapGetters, mapActions } from "vuex";
@@ -197,3 +161,38 @@ export default {
   }
 };
 </script>
+<style>
+.testName {
+  max-width: 50%;
+}
+.testInfoCardSection {
+  border-radius: 25px 25px 25px 25px;
+  background-color: #f0f4ef;
+}
+.card {
+  width: 35%;
+  height: 100%;
+  border-radius: 25px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (max-width: 1150px) {
+  .card {
+    width: 80%;
+    border-radius: 25px;
+  }
+
+  .wave {
+    display: none;
+  }
+
+  .container {
+    height: 50%;
+  }
+}
+</style>

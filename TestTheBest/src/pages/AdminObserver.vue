@@ -36,9 +36,9 @@ export default {
       tab: "one",
       signup: {
         password: "",
-        email: "obs@company.com",
-        firstName: "Observer fname",
-        lastName: "Observer lname"
+        email: "",
+        firstName: "",
+        lastName: ""
       }
     };
   },

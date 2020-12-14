@@ -639,9 +639,11 @@ export default {
     },
     exportTable() {
       // naive encoding to csv format
+      //console.log("aaa      " + this.data);
+      //console.log(this.getApplicants);
       const content = [this.columns.map(col => wrapCsvValue(col.label))]
         .concat(
-          this.data.map(row =>
+          this.getApplicants.map(row =>
             this.columns
               .map(col =>
                 wrapCsvValue(
@@ -656,7 +658,11 @@ export default {
         )
         .join("\r\n");
 
-      const status = exportFile("table-export.csv", content, "text/csv");
+      const status = exportFile(
+        "EmploymappApplicants.csv",
+        content,
+        "text/csv"
+      );
 
       if (status !== true) {
         this.$q.notify({

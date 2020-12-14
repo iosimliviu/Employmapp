@@ -1,5 +1,5 @@
-from input_code2 import solution
-
+from input_code7 import solution
+'''copy and paste your python test in here'''
 def get_test_cases():
     return {
         'SMALL_INPUT': [1, 2, 3],

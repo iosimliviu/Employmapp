@@ -1,4 +1,5 @@
-from input_code1 import solution
+from input_code7 import solution
+'''copy and paste your python test in here'''
 
 def get_test_cases():
     return {

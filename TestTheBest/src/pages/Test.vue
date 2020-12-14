@@ -354,17 +354,26 @@ export default {
     },
     onNext() {
       if (this.stepAnswer == null) return;
-
+      console.log("step " + this.step);
       const question = this.info.questions.concat(this.info.codeQuestions)[
         this.step - 1
       ];
+      console.log(
+        "answers " +
+          JSON.stringify(question.answers) +
+          " " +
+          question.answers.answerText
+      );
 
       if (question.answers) {
         if (this.stepAnswer.isCorrect) this.result += question.score;
-        else this.noIncorrect++;
+        else {
+          this.noIncorrect++;
+          console.log("no incorrect " + this.noIncorrect);
+        }
       } else {
         const codeAnswer = this.codeGuidanceData;
-        if (question.scorePerTest && this.codeGuidanceData.noPassedTests) {
+        if (question.scorePerTest && codeAnswer.noPassedTests) {
           this.result += codeAnswer.noPassedTests * question.scorePerTest;
           this.noPassedTests += codeAnswer.noPassedTests;
         }
@@ -372,23 +381,40 @@ export default {
       this.codeGuidanceData = {};
       console.log(this.result);
 
+      this.info.questions.concat(this.info.codeQuestions)[this.step - 1] === [];
       this.updateUserTest();
     },
     onFinish() {
+      if (this.stepAnswer == null) return;
+      this.step++;
       const question = this.info.questions.concat(this.info.codeQuestions)[
         this.step - 1
       ];
+      console.log("step " + this.step);
       if (question.answers) {
-        if (this.stepAnswer.isCorrect) this.result += question.score;
-        else this.noIncorrect++;
+        if (this.stepAnswer.isCorrect) {
+          this.result += question.score;
+        } else {
+          this.noIncorrect++;
+          console.log("no incorrect " + this.noIncorrect);
+          console.log("answers theoretical " + question.answers);
+        }
       } else {
         const codeAnswer = this.codeGuidanceData;
-        if (question.scorePerTest && this.codeGuidanceData.noPassedTests)
+        console.log("code answer: " + JSON.stringify(codeAnswer));
+        if (question.scorePerTest && codeAnswer.noPassedTests) {
+          console.log(
+            "codeq result: " + codeAnswer.noPassedTests * question.scorePerTest
+          );
           this.result += codeAnswer.noPassedTests * question.scorePerTest;
+          this.noPassedTests = codeAnswer.noPassedTests;
+          console.log("noPassedTests " + this.noPassedTests);
+        }
       }
+
       this.done = true;
       this.codeGuidanceData = {};
-      console.log(this.result);
+      console.log("result " + this.result);
       clearInterval(this.timerInterval);
       this.updateUserTest();
     },
@@ -422,7 +448,7 @@ export default {
     },
     onChange(value) {
       this.codeInput = value;
-      console.log(value + " " + this.codeInput);
+      //console.log(value + " " + this.codeInput);
     },
     testCode(codeQuestionId) {
       this.$axios
